@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'sslserver',
+    'corsheaders',
 ]
 
 MIDDLEWARE = [
@@ -49,9 +50,12 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
 ]
 
 ROOT_URLCONF = 'django_vue_template.urls'
+#  we only want to allow cross-origin resource from http://localhost:8080 locally
+CORS_ORIGIN_ALLOW_ALL = False
 
 TEMPLATES = [
     {
@@ -129,3 +133,8 @@ STATICFILES_DIRS = [
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+try:
+    from local_settings import *
+except ImportError:
+    pass
