@@ -21,8 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-# SECRET_KEY = 'django-insecure-*7ri2430kc9-tw5p0*&(9ih5h-6fzf!6sra1!0qiqx=rf4iw^p'
-SECRET_KEY = os.environ['SECRET_KEY']
+SECRET_KEY = 'django-insecure-*7ri2430kc9-tw5p0*&(9ih5h-6fzf!6sra1!0qiqx=rf4iw^p'
+# SECRET_KEY = os.environ['SECRET_KEY']
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'whitenoise.runserver_nostatic',
     'sslserver',
     'corsheaders',
 ]
@@ -53,11 +54,15 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'corsheaders.middleware.CorsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
 ROOT_URLCONF = 'django_vue_template.urls'
 #  we only want to allow cross-origin resource from http://localhost:8080 locally
 CORS_ORIGIN_ALLOW_ALL = False
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
 
 TEMPLATES = [
     {
