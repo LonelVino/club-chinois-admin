@@ -2,6 +2,37 @@
 
 > A Vue.js project
 
+## Structure of Django
+```
+|--+django_vue_template (django root)
+|  |---setting.py
+|  |---wsgi.py
+|  |---// more //
+|  +-------------
+|
+|--+django app
+|  |
+|  |--models.py
+|  |--views.py
+|  |--// more //
+|  +------------
+|
+|  // run vue-init in server root //
+|  // you will have vue root folder here //
+|--+vue root
+|  |
+|  |--package.json
+|  |--index.html
+|  |--src folder
+|  |--static folder
+|  |--// more //
+|  +------------
+|
+|---manage.py
+|---// more //
+
+```
+
 ## Build Setup
 
 ``` bash
