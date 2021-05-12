@@ -134,7 +134,8 @@ export default {
         if (valid) {
           this.loading = true
           console.log("PWD: ", this.loginForm.password, 'USR: ', this.loginForm.username)
-          this.$store.dispatch('user/login', (this.loginForm.username, this.loginForm.password))
+          
+          this.$store.dispatch('user/login', {'password': this.loginForm.password, 'username': this.loginForm.username})
             .then(() => {
               // this.$router.push({ path: this.redirect || '/' })
               this.Srouter.push({path:'/helloworld'})
