@@ -157,8 +157,8 @@ export default {
       })
     },
 
-    getUserInfo() {
-      this.$store.dispatch('user/getInfo')
+    async getUserInfo() {
+      await this.$store.dispatch('user/getInfo')
       .then(res => {
         const data = res
         // console.log('UserInfo in getUserInfo() in login/index.vue:', data)
