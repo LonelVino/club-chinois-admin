@@ -38,7 +38,7 @@ def user_info(request):
     return JsonResponse({'code': 200,\
         'data': {'roles': ['admin'], 'name': 'Information', 'telephone': '1818645872', 'intro': 'Me'}})
 
-def logout():
+def logout(request):
     # No validation, pass directly
     return JsonResponse({'code': 200,\
         'status': True})

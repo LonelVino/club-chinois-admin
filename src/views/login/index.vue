@@ -129,14 +129,18 @@ export default {
         this.$refs.password.focus()
       })
     },
-    handleLogin() {
-      this.$refs.loginForm.validate(valid => {
+    async handleLogin() {
+      this.$refs.loginForm.validate(async(valid) => {
         if (valid) {
-          this.loading = true          
-          this.$store.dispatch('user/login', {'password': this.loginForm.password, 'username': this.loginForm.username})
-            .then(() => {
+          this.loading = true    
+          let payload = {'password': this.loginForm.password, 'username': this.loginForm.username}
+          // const promise = new Promise((resolve, reject) => {
+          //   this.$store.dispatch('user/login', payload)
+          // });
+          this.$store.dispatch('user/login', payload)
+            .then(async() => {
               // this.$router.push({ path: this.redirect || '/' })
-              const data = this.getUserInfo()
+              const data = await this.getUserInfo()
               // console.log('Roles in Getters:',  this.$store.getters.roles)
               this.$router.push({path:'/dashboard'})
               this.loading = false
@@ -145,6 +149,7 @@ export default {
               console.error('errors in Page jumping\n', e)
               this.loading = false
             })
+          
         } else {
           console.log('error submit!!')
           return false
