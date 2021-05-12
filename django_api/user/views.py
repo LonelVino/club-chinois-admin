@@ -15,7 +15,8 @@ def login(request: WSGIRequest):
         username = received_json_data['username']
         password = received_json_data['password']
         if (username and password): 
-            return JsonResponse({'status': True})
+            return JsonResponse(\
+                {'code': 200, 'message':[{'status': True}]})
 
 def all_user_names():
     return JsonResponse({'names': ['William', 'Rod', 'Grant']})

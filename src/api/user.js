@@ -3,7 +3,6 @@ import request from '@/utils/request'
 var BASE_URL = '/django_api/user'
 
 export function login(data) {
-  console.log('console in API/user.js - login()', data)
   return request({
     url: BASE_URL + '/login',
     method: 'post',

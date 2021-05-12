@@ -138,10 +138,11 @@ export default {
           this.$store.dispatch('user/login', {'password': this.loginForm.password, 'username': this.loginForm.username})
             .then(() => {
               // this.$router.push({ path: this.redirect || '/' })
-              this.Srouter.push({path:'/helloworld'})
+              this.$router.push({path:'/helloworld'})
               this.loading = false
             })
-            .catch(() => {
+            .catch((e) => {
+              console.log('errors in Page jumping\n', e)
               this.loading = false
             })
         } else {
