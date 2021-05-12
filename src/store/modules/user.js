@@ -58,19 +58,19 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        console.log(data)
-        // const { roles, name, avatar, introduction } = data
+        const { intro, name, roles, telephone } = data
+        console.log('intro, name, roles, telephone:', intro, name, roles, telephone)
+        // roles must be a non-empty array
+        if (!roles || roles.length <= 0) {
+          reject('getInfo: roles must be a non-null array!')
+        }
 
-        // // roles must be a non-empty array
-        // if (!roles || roles.length <= 0) {
-        //   reject('getInfo: roles must be a non-null array!')
-        // }
-
-        // commit('SET_ROLES', roles)
-        // commit('SET_NAME', name)
-        // commit('SET_AVATAR', avatar)
-        // commit('SET_INTRODUCTION', introduction)
+        commit('SET_ROLES', roles)
+        commit('SET_NAME', name)
+        commit('SET_AVATAR', telephone)
+        commit('SET_INTRODUCTION', intro)
         resolve(data)
+        return data
       }).catch(error => {
         reject(error)
       })
@@ -95,7 +95,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       getAllNames().then(response => {
         const {data} = response
-        console.log(data)('')
+        console.log('All Names are:', data)
         resolve()
       }).catch(error => {
         reject(error)

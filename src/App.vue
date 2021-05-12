@@ -21,7 +21,8 @@ export default {
     FetchData: function() {
       var app = this;
       // env.API_URL: in development confition, the path is in the /config/dev.env.js
-      axios.get(process.env.API_URL + "/django_api/user/all_names").then(response => {
+      axios.get(process.env.API_URL + "/django_api/user/all_names")
+      .then(response => {
         app.names = response.data.names;
       });
     },

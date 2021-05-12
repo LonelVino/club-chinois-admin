@@ -132,17 +132,17 @@ export default {
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
-          this.loading = true
-          console.log("PWD: ", this.loginForm.password, 'USR: ', this.loginForm.username)
-          
+          this.loading = true          
           this.$store.dispatch('user/login', {'password': this.loginForm.password, 'username': this.loginForm.username})
             .then(() => {
               // this.$router.push({ path: this.redirect || '/' })
-              this.$router.push({path:'/helloworld'})
+              const data = this.getUserInfo()
+              // console.log('Roles in Getters:',  this.$store.getters.roles)
+              this.$router.push({path:'/dashboard'})
               this.loading = false
             })
             .catch((e) => {
-              console.log('errors in Page jumping\n', e)
+              console.error('errors in Page jumping\n', e)
               this.loading = false
             })
         } else {
@@ -151,6 +151,17 @@ export default {
         }
       })
     },
+
+    getUserInfo() {
+      this.$store.dispatch('user/getInfo')
+      .then(res => {
+        const data = res
+        // console.log('UserInfo in getUserInfo() in login/index.vue:', data)
+        return data
+      }).catch((e) => {
+        console.error(e)
+      })
+    }
   }
 }
 </script>

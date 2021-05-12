@@ -16,22 +16,29 @@ def login(request: WSGIRequest):
         password = received_json_data['password']
         if (username and password): 
             return JsonResponse(\
-                {'code': 200, 'message':[{'status': True}]})
+                {'code': 200,\
+                'message':[{'status': True}]})
 
-def all_user_names():
-    return JsonResponse({'names': ['William', 'Rod', 'Grant']})
+def all_user_names(request):
+    return JsonResponse({'code': 200,\
+        'names': ['William', 'Rod', 'Grant']})
 
-def all_user_infos():
-    return JsonResponse({'data': [{'William': [{'role': 'Male'}, {'name': 'Information'}, {'telephone': '1818645872'}, {'intro': 'Me'}]},\
-        {'Rod': [{'role': 'Male'}, {'name': 'Information'}, {'telephone': '1818645872'}, {'intro': 'Me'}]},\
-        {'Grant': [{'role': 'Male'}, {'name': 'Information'}, {'telephone': '1818645872'}, {'intro': 'Me'}]}]})
+def all_user_infos(request):
+    return JsonResponse(\
+        {'code': 200,\
+        'data': [{'William': {'roles': ['admin'], 'name': 'Information', 'telephone': '1818645872', 'intro': 'Me'}},\
+        {'Rod': {'roles': ['admin'], 'name': 'Information', 'telephone': '1818645872', 'intro': 'Me'}},\
+        {'Grant': {'roles': ['admin'], 'name': 'Information', 'telephone': '1818645872', 'intro': 'Me'}}]})
 
-def user_name(id):
-    return JsonResponse({'names': 'William'})
+def user_name(request):
+    return JsonResponse({'code': 200},\
+        {'roles': ['admin'], 'name': 'Williams'})
 
-def user_info(name):
-    return JsonResponse({'data': [{'role': 'Male'}, {'name': 'Information'}, {'telephone': '1818645872'}, {'intro': 'Me'}]})
+def user_info(request):
+    return JsonResponse({'code': 200,\
+        'data': {'roles': ['admin'], 'name': 'Information', 'telephone': '1818645872', 'intro': 'Me'}})
 
 def logout():
     # No validation, pass directly
-    return JsonResponse({'status': True})
+    return JsonResponse({'code': 200,\
+        'status': True})
