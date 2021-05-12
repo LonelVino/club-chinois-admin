@@ -1,4 +1,4 @@
-import { login, logout, getInfo } from '@/api/user'
+import { login, logout, getName, getInfo, getAllNames, getAllInfos } from '@/api/user'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -37,7 +37,19 @@ const actions = {
     })
   },
 
-  // get user info
+  // get one user name
+  getName({ commit, state }) {
+    return new Promise((resolve, reject) => {
+      getName().then(response => {
+        const { data } = response
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  // get one user info
   getInfo({ commit, state }) {
     return new Promise((resolve, reject) => {
       getInfo().then(response => {
@@ -46,19 +58,45 @@ const actions = {
         if (!data) {
           reject('Verification failed, please Login again.')
         }
+        console.log(data)
+        // const { roles, name, avatar, introduction } = data
 
-        const { roles, name, avatar, introduction } = data
+        // // roles must be a non-empty array
+        // if (!roles || roles.length <= 0) {
+        //   reject('getInfo: roles must be a non-null array!')
+        // }
 
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
-
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', avatar)
-        commit('SET_INTRODUCTION', introduction)
+        // commit('SET_ROLES', roles)
+        // commit('SET_NAME', name)
+        // commit('SET_AVATAR', avatar)
+        // commit('SET_INTRODUCTION', introduction)
         resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  // get all users' infos
+  getAllInfos() {
+    return new Promise((resolve, reject) => {
+      getAllInfos().then(response => {
+        const {data} = response
+        console.log('all infos:', data)
+        resolve()
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
+  // get all users' names
+  getAllNames() {
+    return new Promise((resolve, reject) => {
+      getAllNames().then(response => {
+        const {data} = response
+        console.log(data)('')
+        resolve()
       }).catch(error => {
         reject(error)
       })
@@ -74,7 +112,7 @@ const actions = {
 
         // reset visited views and cached views
         // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
-        dispatch('tagsView/delAllViews', null, { root: true })
+        // dispatch('tagsView/delAllViews', null, { root: true })
 
         resolve()
       }).catch(error => {

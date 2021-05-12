@@ -20,14 +20,15 @@ export default {
   methods: {
     FetchData: function() {
       var app = this;
-      axios.get(process.env.API_URL + "/api_example/").then(response => {
+      // env.API_URL: in development confition, the path is in the /config/dev.env.js
+      axios.get(process.env.API_URL + "/django_api/user/all_names").then(response => {
         app.names = response.data.names;
       });
     },
-    SelectWinner: function() {
-      var winner = this.names[Math.floor(Math.random()*this.names.length)];
-      this.winner = winner;
-    },
+    // SelectWinner: function() {
+    //   var winner = this.names[Math.floor(Math.random()*this.names.length)];
+    //   this.winner = winner;
+    // },
   }
 }
 </script>

@@ -28,7 +28,9 @@ SECRET_KEY = 'django-insecure-*7ri2430kc9-tw5p0*&(9ih5h-6fzf!6sra1!0qiqx=rf4iw^p
 DEBUG = True
 
 
-ALLOWED_HOSTS = ['*']
+
+ALLOWED_HOSTS=['*']
+CORS_ORIGIN_ALLOW_ALL = True
 
 
 # Application definition
@@ -49,7 +51,7 @@ MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
+    # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
@@ -60,6 +62,16 @@ MIDDLEWARE = [
 ROOT_URLCONF = 'django_vue_template.urls'
 #  we only want to allow cross-origin resource from http://localhost:8080 locally
 CORS_ORIGIN_ALLOW_ALL = False
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/3.2/howto/static-files/
+
+STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'dist'),
+    os.path.join(BASE_DIR, 'dist/static'),
+]
 
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedStaticFilesStorage'
@@ -79,6 +91,14 @@ TEMPLATES = [
         },
     },
 ]
+
+CORS_ORIGIN_WHITELIST = (
+    'http://127.0.0.1:8080',   # Frontend on dev mode
+    'http://127.0.0.1:8081',    # Frontend on dev mode
+    'http://localhost:8080', # Frontend on dev mode
+    'http://localhost:8081', # Frontend on dev mode
+    'https://127.0.0.1:8000',   # Backend        
+)
 
 WSGI_APPLICATION = 'django_vue_template.wsgi.application'
 
@@ -127,21 +147,11 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/3.2/howto/static-files/
-
-STATIC_URL = '/static/'
-
-STATICFILES_DIRS = [
-  os.path.join(BASE_DIR, 'dist/static'),
-]
-
 # Default primary key field type
 # https://docs.djangoproject.com/en/3.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-try:
-    from local_settings import *
-except ImportError:
-    pass
+# 扩展 Model
+# AUTH_USER_MODEL = 'info.UserInfo'
+

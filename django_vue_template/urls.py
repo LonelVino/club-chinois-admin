@@ -22,5 +22,8 @@ from django.conf.urls import include
 urlpatterns = [
   path('admin/', admin.site.urls),
   url(r'^$', TemplateView.as_view(template_name='index.html')),
-  path('api_example', include('api_example.urls')),
+  path('django_api', include('django_api.urls')),
+  path('django_api/article', include('django_api.article.urls')),
+  path('django_api/user', include('django_api.user.urls')),
+  path('django_api/activity', include('django_api.activity.urls')),
 ]

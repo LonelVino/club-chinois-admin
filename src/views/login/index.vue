@@ -96,21 +96,10 @@ export default {
       loading: false,
       showDialog: false,
       redirect: undefined,
-      otherQuery: {}
     }
   },
   watch: {
-    $route: {
-      handler: function(route) {
-        const query = route.query
-        if (query) {
-          this.redirect = query.redirect
-          console.log('redirect: ', this.redirect)
-          this.otherQuery = this.getOtherQuery(query)
-        }
-      },
-      immediate: true
-    }
+
   },
   created() {
     // window.addEventListener('storage', this.afterQRScan)
@@ -144,10 +133,11 @@ export default {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/login', this.loginForm)
+          console.log("PWD: ", this.loginForm.password, 'USR: ', this.loginForm.username)
+          this.$store.dispatch('user/login', (this.loginForm.username, this.loginForm.password))
             .then(() => {
-              console.log("LoginForm:  ", this.loginForm)
-              this.$router.push({ path: this.redirect || '/', query: this.otherQuery })
+              // this.$router.push({ path: this.redirect || '/' })
+              this.Srouter.push({path:'/helloworld'})
               this.loading = false
             })
             .catch(() => {
@@ -159,14 +149,6 @@ export default {
         }
       })
     },
-    getOtherQuery(query) {
-      return Object.keys(query).reduce((acc, cur) => {
-        if (cur !== 'redirect') {
-          acc[cur] = query[cur]
-        }
-        return acc
-      }, {})
-    }
   }
 }
 </script>
