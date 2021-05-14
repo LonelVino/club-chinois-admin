@@ -8,6 +8,10 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('/article_name', views.article_name),
-    path('/article_content', views.article_content),
+    path('/register', views.registry),
+    path('/login', views.login),
+    path('/logout', views.logout),
+
+    path('/getall', views.get_all_cas),
+
 ]

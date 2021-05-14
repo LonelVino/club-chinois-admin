@@ -1,4 +1,4 @@
-import { login, logout, getName, getInfo, getAllNames, getAllInfos } from '@/api/user'
+import { register, login, logout, getName, getInfo, getAllNames, getAllInfos } from '@/api/user'
 import router, { resetRouter } from '@/router'
 
 const state = {
@@ -24,6 +24,18 @@ const mutations = {
 }
 
 const actions = {
+  register({ commit }, userInfo) {
+    const { username, password } = userInfo
+    return new Promise((resolve, reject) => {
+      register({ username: username.trim(), password: password }).then(response => {
+        resolve()
+        return response;
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+
   // user login
   login({ commit }, userInfo) {
     const { username, password } = userInfo

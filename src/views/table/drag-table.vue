@@ -22,7 +22,7 @@
 
       <el-table-column width="110px" align="center" label="Author">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
 
@@ -97,15 +97,16 @@ export default {
   methods: {
     async getList() {
       this.listLoading = true
-      const { data } = await fetchList(this.listQuery)
-      this.list = data.items
-      this.total = data.total
+      const res = await fetchList(this.listQuery)
+      // this.list = res.data
+      console.log('After fetching the list of users:', res, this.list)
+      this.total = res.total
       this.listLoading = false
-      this.oldList = this.list.map(v => v.id)
-      this.newList = this.oldList.slice()
-      this.$nextTick(() => {
-        this.setSort()
-      })
+      // this.oldList = this.list.map(v => v.id)
+      // this.newList = this.oldList.slice()
+      // this.$nextTick(() => {
+      //   this.setSort()
+      // })
     },
     setSort() {
       const el = this.$refs.dragTable.$el.querySelectorAll('.el-table__body-wrapper > table > tbody')[0]

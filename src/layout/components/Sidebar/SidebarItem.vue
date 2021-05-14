@@ -57,7 +57,7 @@ export default {
     return {}
   },
   mounted() {
-    console.log(this.item)
+    // console.log(this.item)
   },
   methods: {
     hasOneShowingChild(children = [], parent) {

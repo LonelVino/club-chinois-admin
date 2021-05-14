@@ -45,6 +45,8 @@ INSTALLED_APPS = [
     'whitenoise.runserver_nostatic',
     'sslserver',
     'corsheaders',
+    'TestModel',
+    'django_api'
 ]
 
 MIDDLEWARE = [
@@ -109,7 +111,7 @@ WSGI_APPLICATION = 'django_vue_template.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'NAME': BASE_DIR / 'worldWeek.db',
     }
 }
 

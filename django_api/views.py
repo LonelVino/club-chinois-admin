@@ -10,4 +10,4 @@ from django.http import JsonResponse
 
 
 def pages(request):
-    return JsonResponse({'pages': ['User', 'Activity', 'Article']})
+    return JsonResponse({'pages': ['User', 'ane', 'vol', 'pitch', 'cas']})

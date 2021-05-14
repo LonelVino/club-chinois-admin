@@ -109,6 +109,7 @@ export default {
     async getList() {
       this.listLoading = true
       const { data } = await fetchList(this.listQuery)
+      console.log('after fetching the list of users:', data)
       const items = data.items
       this.list = items.map(v => {
         this.$set(v, 'edit', false) // https://vuejs.org/v2/guide/reactivity.html

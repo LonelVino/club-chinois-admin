@@ -1,7 +1,7 @@
 '''
 /django_api/apps.py
 -------------------------
-Entrance of the Page(root: user, article, activity)
+Entrance of the Page(root: user, cas, ane, vol, pitch)
 '''
 
 from django.apps import AppConfig

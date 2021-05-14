@@ -1,5 +1,6 @@
 1.SVG doesn't show 
-2.Fix the Problems not shown in sidebar
+2.mock request of score, instead of articles
+FIGURE OUT HOW THE SIDEBAR WORKS
 3.Add verification of login
 4.Create Database 
 5.Complete the logic of database (ADD, DELETE, QUERY, MODIFY)

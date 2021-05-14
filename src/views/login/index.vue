@@ -5,57 +5,87 @@
       <div class="title-container">
         <h1 class="title">World Week</h1>
       </div>
+      <div class="title-container">
+        <h1 class="sub-title" v-if="isLogin">Login</h1>
+        <h1 class="sub-title" v-else>Register</h1>
+      </div>
 
-      <el-form-item prop="username">
-        <span class="svg-container">
-          <svg-icon icon-class="user" />
-        </span>
-        <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
-          type="text"
-          tabindex="1"
-          autocomplete="on"
-        />
-      </el-form-item>
-
-      <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
-        <el-form-item prop="password">
+      <div class="input-item">
+        <el-form-item prop="username">
           <span class="svg-container">
-            <svg-icon icon-class="password" />
+            <svg-icon icon-class="user" />
           </span>
           <el-input
-            :key="passwordType"
-            ref="password"
-            v-model="loginForm.password"
-            :type="passwordType"
-            placeholder="Password"
-            name="password"
-            tabindex="2"
+            ref="username"
+            v-model="loginForm.username"
+            placeholder="Username"
+            name="username"
+            type="text"
+            tabindex="1"
             autocomplete="on"
-            @keyup.native="checkCapslock"
-            @blur="capsTooltip = false"
-            @keyup.enter.native="handleLogin"
           />
-          <span class="show-pwd" @click="showPwd">
-            <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
-          </span>
         </el-form-item>
-      </el-tooltip>
+      </div>
+      
+      <div class="input-item">
+        <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
+          <el-form-item prop="password">
+            <span class="svg-container">
+              <svg-icon icon-class="password" />
+            </span>
+            <el-input
+              :key="passwordType"
+              ref="password"
+              v-model="loginForm.password"
+              :type="passwordType"
+              placeholder="Password"
+              name="password"
+              tabindex="2"
+              autocomplete="on"
+              @keyup.native="checkCapslock"
+              @blur="capsTooltip = false"
+            />
+            <span class="show-pwd" @click="showPwd">
+              <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+            </span>
+          </el-form-item>
+        </el-tooltip>
+      </div>
+      
+      <div class="input-item" v-if='!isLogin'>
+        <el-tooltip v-model="capsTooltip" content="Caps lock is On" placement="right" manual>
+          <el-form-item prop="password">
+            <span class="svg-container">
+              <svg-icon icon-class="password" />
+            </span>
+            <el-input
+              :key="passwordType"
+              v-model="password_sec"
+              :type="passwordType"
+              placeholder="Enter Password Again"
+              name="password"
+              tabindex="2"
+              autocomplete="on"
+              @keyup.native="checkCapslock"
+              @blur="capsTooltip = false"
+            />
+            <span class="show-pwd" @click="showPwd">
+              <svg-icon :icon-class="passwordType === 'password' ? 'eye' : 'eye-open'" />
+            </span>
+          </el-form-item>
+        </el-tooltip>
+      </div>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" v-if='isLogin'  style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" v-else style="width:100%;margin-bottom:30px;" @click.native.prevent="handleRegister">Register</el-button>
 
-      <div style="position:relative">
-        <div class="tips">
-          <span>Username : admin</span>
-          <span>Password : any</span>
-        </div>
-        <div class="tips">
-          <span style="margin-right:18px;">Username : editor</span>
-          <span>Password : any</span>
-        </div>
+      <div class="lr-title">
+          <p v-if="!isLogin">
+            Already signed up? <a @click="isLogin = (isLogin==true) ? false : true">Login</a>
+          </p>
+          <p v-else>
+            have no account? <a @click="isLogin = (isLogin==true) ? false : true">Register</a>
+          </p>
       </div>
     </el-form>
 
@@ -63,13 +93,12 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
 
 export default {
   name: 'Login',
   data() {
     const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
+      if (value.length < 0) {
         callback(new Error('Please enter the correct user name'))
       } else {
         callback()
@@ -82,15 +111,25 @@ export default {
         callback()
       }
     }
+    const validatePassword_sec = (rule, value, callback) => {
+      if (value.length < 6) {
+        callback(new Error('The password can not be less than 6 digits'))
+      } else {
+        callback()
+      }
+    }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        username: '',
+        password: '',
       },
+      password_sec: '',
       loginRules: {
         username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        password: [{ required: true, trigger: 'blur', validator: validatePassword }],
+        password_sec: [{ required: true, trigger: 'blur', validator: validatePassword_sec }],        
       },
+      isLogin: true,
       passwordType: 'password',
       capsTooltip: false,
       loading: false,
@@ -129,6 +168,30 @@ export default {
         this.$refs.password.focus()
       })
     },
+
+    async handleRegister() {
+      this.$refs.loginForm.validate(async(valid) => {
+        if (valid && this.password_sec==this.loginForm.password) {
+          this.loading = true    
+          let payload = {'password': this.loginForm.password, 'username': this.loginForm.username}
+          this.$store.dispatch('user/register', payload)
+            .then(async(res) => {
+              location.reload()
+              this.loading = false
+            })
+            .catch((e) => {
+              this.loginForm.username = ''; this.loginForm.password = ''; this.password_sec = '';
+              console.error('errors in Page jumping\n', e)
+              this.loading = false
+            })
+          
+        } else {
+          console.log('error submit!!')
+          return false
+        }
+      })
+    },
+
     async handleLogin() {
       this.$refs.loginForm.validate(async(valid) => {
         if (valid) {
@@ -143,6 +206,10 @@ export default {
               const data = await this.getUserInfo()
               // console.log('Roles in Getters:',  this.$store.getters.roles)
               this.$router.push({path:'/dashboard'})
+              this.$message({
+                message: 'Login successfully!!!',
+                type: 'success'
+              });
               this.loading = false
             })
             .catch((e) => {
@@ -228,7 +295,17 @@ $light_gray:#eee;
   width: 100%;
   background-color: $bg;
   overflow: hidden;
-
+  .input-item {
+    display: flex;
+    flex-direction: column;
+  }
+  .tooltip-txt {
+    color: rgb(202, 197, 197);
+    font-weight: bolder;
+    margin: 0vw 0vw 0.2vw 0.4vw;
+    display: flex;
+    justify-content: start;
+  }
   .login-form {
     position: relative;
     width: 520px;
@@ -268,7 +345,12 @@ $light_gray:#eee;
       text-align: center;
       font-weight: bold;
     }
+    .sub-title {
+      font-size: 20px;
+      color: $light_gray;
+    }
   }
+
 
   .show-pwd {
     position: absolute;
@@ -284,6 +366,21 @@ $light_gray:#eee;
     position: absolute;
     right: 0;
     bottom: 6px;
+  }
+
+  .lr-title{
+    position: relative;
+    height:32px;
+    line-height: 2px;
+    margin-bottom: 20px;
+    display: flex;
+    justify-content: flex-end;
+  }
+  .lr-title p{
+      font-size: 10px;
+      color:rgb(219, 219, 183);
+      font-weight: bold;
+      /*width:50%;*/
   }
 
   @media only screen and (max-width: 470px) {

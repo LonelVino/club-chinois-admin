@@ -8,10 +8,12 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('/login', views.login),
     path('/one_name', views.user_name),
     path('/one_info', views.user_info),
     path('/all_names', views.all_user_names),
     path('/all_infos', views.all_user_infos),
-    path('/logout', views.logout)    
+
+    path('/delete_by_id', views.user_delete_byId),
+
+    path('/test_add', views.test_add),    
 ]

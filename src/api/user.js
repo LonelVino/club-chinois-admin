@@ -1,14 +1,32 @@
 import request from '@/utils/request'
 
+var CAS_BASE_URL = '/django_api/cas'
+
 var BASE_URL = '/django_api/user'
 
-export function login(data) {
+export function register(data) {
   return request({
-    url: BASE_URL + '/login',
+    url: CAS_BASE_URL + '/register',
     method: 'post',
     data
   })
 }
+
+export function login(data) {
+  return request({
+    url: CAS_BASE_URL + '/login',
+    method: 'post',
+    data
+  })
+}
+
+export function logout() {
+  return request({
+    url: CAS_BASE_URL + '/logout',
+    method: 'post'
+  })
+}
+
 
 export function getName() {
   return request({
@@ -36,12 +54,5 @@ export function getAllInfos() {
   return request({
     url: BASE_URL + '/all_infos',
     method: 'get',
-  })
-}
-
-export function logout() {
-  return request({
-    url: BASE_URL + '/logout',
-    method: 'post'
   })
 }

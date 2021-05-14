@@ -8,6 +8,6 @@ from django.urls import path
 from . import views
 
 urlpatterns = [
-    path('/activity_name', views.activity_name),
-    path('/activity_info', views.activity_info),
+    path('/ane_name', views.ane_name),
+    path('/ane_info', views.ane_info),
 ]

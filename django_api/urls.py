@@ -1,7 +1,7 @@
 '''
 /django_api/urls.py
 -------------------------
-Organize the api urls of parts: user, article, activity 
+Organize the api urls of parts: user, cas, ane, vol, pitch 
 '''
 
 from django.urls import path
