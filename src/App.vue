@@ -23,8 +23,12 @@ export default {
   },
   methods: {
     Init: function() {
-      this.$store.dispatch('user/getRole', this.cas_id)
-      this.$store.dispatch('user/getInfo', 2)    
+      if (this.cas_id == undefined) {
+        this.$router.push('/login')
+      } else {
+        this.$store.dispatch('user/getRole', this.cas_id)
+      }
+      
     },
   }
 }

@@ -18,7 +18,7 @@ const mutations = {
   SET_NAME: (state, name) => {
     state.name = name
   },
-  SET_ROLES: (state, role) => {
+  SET_ROLE: (state, role) => {
     state.role = role
   },
   SET_SCORE: (state, score) => {
@@ -55,7 +55,7 @@ const actions = {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
         commit('SET_CAS_ID', data.id)
-        commit('SET_ROLES', data.role)
+        commit('SET_ROLE', data.role)
         resolve()
       }).catch(error => {
         reject(error)

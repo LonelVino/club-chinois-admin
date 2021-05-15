@@ -13,7 +13,9 @@ urlpatterns = [
     path('/all_names', views.all_user_names),
     path('/all_infos', views.all_user_infos),
 
-    path('/delete_by_id', views.user_delete_byId),
+    path('/add_info', views.add_info),
+    path('/update_info', views.update_info),
+    path('/del_info', views.user_delete_byId),
 
     path('/test_add', views.test_add),    
 ]

@@ -8,6 +8,7 @@ import json
 from django.http import JsonResponse
 from django.core.handlers.wsgi import WSGIRequest
 from django_api.user.models import User
+from django_api.cas.models import Cas
 
 def all_user_names(request):
     if request.method == 'GET':
@@ -24,11 +25,18 @@ def all_user_names(request):
 def all_user_infos(request):
     if request.method == 'GET':
         all_users = list(User.objects.all())
+        all_infos = []
+        for user in all_users:
+            tmp_user = {}
+            tmp_user['id'] = user.id; tmp_user['name'] = user.name; tmp_user['isAne'] = user.isAne;  tmp_user['isVol'] = user.isVol;  tmp_user['isPitch'] = user.isPitch;
+            tmp_user['score'] = user.score; tmp_user['email'] = user.email; tmp_user['telephone'] = user.telephone; tmp_user['loc'] = user.loc;
+            all_infos.append(tmp_user)
         return JsonResponse({
             'code': 200,
             'msg': 'get all information successfully',
             'data': {
-                'total': len(all_users)
+                'total': len(all_users),
+                'infos': all_infos
             }
         })
 
@@ -49,7 +57,7 @@ def user_info(request):
         id = request.GET.get('id',default=0)
         name = request.GET.get('name',default='')
         if id != 0:
-            user_1 = User.objects.filter(id=id)[0]
+            User.objects.filter(id=id)[0]
         elif name != '':
             user_1 = User.objects.filter(name=name)[0]
         else:
@@ -67,14 +75,49 @@ def user_info(request):
             }
         })
 
+
+def add_info(request):
+    if request.method == 'POST':
+        received_json_data = json.loads(request.body)
+        rec = received_json_data
+        user_1 = User(name=rec['name'], isAne=rec['isAne'], isVol=rec['isVol'], isPitch=rec['isPitch'], 
+        score=rec['score'],telephone=rec['telephone'], email=rec['email'], loc=rec['loc'])
+        user_1.save()
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Add Successfully!',
+            'data':{
+                'name': rec['name']
+            }
+        })
+
+def update_info(request):
+    if request.method == 'POST':
+        received_json_data = json.loads(request.body)
+        rec = received_json_data
+        user_1 = User(name=rec['name'], isAne=rec['isAne'], isVol=rec['isVol'], isPitch=rec['isPitch'], telephone=rec['telephone'],
+        email=rec['email'], loc=rec['loc'])
+        user_1.save()
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Update Successfully!',
+            'data':{
+                'name': rec['name']
+            }
+        })
+
+
 def user_delete_byId(request):
-    received_json_data = json.loads(request.body)
-    id = received_json_data['id']
+    try:
+        id = request.GET.get('id')
+    except:
+        pass
     if id:
+        print(id)
         User.objects.filter(id=id).delete()
         return JsonResponse({
             'code': 200,
-            'msg': 'Delete successfully!'
+            'msg': 'Delete successfully!',
         })
     else:
         return JsonResponse({

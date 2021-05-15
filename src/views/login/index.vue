@@ -203,7 +203,6 @@ export default {
           this.$store.dispatch('user/login', payload)
             .then(async() => {
               // this.$router.push({ path: this.redirect || '/' })
-              const data = await this.getUserInfo()
               // console.log('Roles in Getters:',  this.$store.getters.roles)
               this.$router.push({path:'/dashboard'})
               this.$message({
@@ -216,6 +215,13 @@ export default {
               console.error('errors in Page jumping\n', e)
               this.loading = false
             })
+            if (this.$store.getters.cas_id==undefined) {
+              setTimeout(() => {
+                console.log('This cas_id in Store is undefined now....: ', this.$store.getters.cas_id)
+              }, 5000);
+            }
+            this.getUserInfo()
+            console.log('cas_id in Store: ', this.$store.getters.cas_id)
           
         } else {
           console.log('error submit!!')
@@ -225,7 +231,7 @@ export default {
     },
 
     async getUserInfo() {
-      await this.$store.dispatch('user/getInfo')
+      await this.$store.dispatch('user/getRole', this.cas_id)
       .then(res => {
         const data = res
         // console.log('UserInfo in getUserInfo() in login/index.vue:', data)

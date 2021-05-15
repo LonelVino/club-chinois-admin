@@ -22,11 +22,11 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'roles'
+      'role'
     ])
   },
   created() {
-    if (!this.roles.includes('admin')) {
+    if (this.role != 'admin') {
       this.currentRole = 'editorDashboard'
     }
     console.log('roles in Dashborad/index.vue:', this.roles, '\n',

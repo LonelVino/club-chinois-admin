@@ -62,3 +62,26 @@ export function getAllInfos() {
     method: 'get',
   })
 }
+
+export function addInfo(data) {
+  return request({
+    url: BASE_URL + '/add_info',
+    method: 'post',
+    data
+  })
+}
+
+export function updateInfo(data) {
+  return request({
+    url: BASE_URL + '/update_info',
+    method: 'put',
+    data
+  })
+}
+
+export function deleteInfo(id) {
+  return request({
+    url: BASE_URL + '/del_info?id='+id,
+    method: 'delete',
+  })
+}
