@@ -4,7 +4,7 @@ import router, { resetRouter } from '@/router'
 const state = {
   cas_id: 0,
   name: '',
-  role: '',
+  role: 'admin',
   score: '',
   isAne: 0,
   isVol: 0,

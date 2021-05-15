@@ -104,7 +104,7 @@ def get_all_cas(request):
 
 def get_role(request):
     if request.method == 'GET':
-        id = request.GET.get('cas_id',default='2')
+        id = request.GET.get('cas_id',default='1')
         cas1 = Cas.objects.filter(id=id)[0]
         return JsonResponse({
             'code': 200,

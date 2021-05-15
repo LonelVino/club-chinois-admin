@@ -7,7 +7,8 @@ FIGURE OUT HOW THE SIDEBAR WORKS
 4.according to the API document, finish the tables
 
 ## Store
-5.add important information in store (Vuex)
+5.FIx the uncachable problem (Vuex)
+
 
 6.userinfo get: according by the username while logging in (after finishing the database), now just testing
 7.Add the redirect part
