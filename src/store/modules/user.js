@@ -1,26 +1,38 @@
-import { register, login, logout, getName, getInfo, getAllNames, getAllInfos } from '@/api/user'
+import { register, login, logout, getRole, getName, getInfo, getAllNames, getAllInfos } from '@/api/user'
 import router, { resetRouter } from '@/router'
 
 const state = {
+  cas_id: '',
   name: '',
-  avatar: '',
-  introduction: '',
-  roles: []
+  role: '',
+  score: '',
+  isAne: 0,
+  isVol: 0,
+  isPitch: 0,
 }
 
 const mutations = {
-  SET_INTRODUCTION: (state, introduction) => {
-    state.introduction = introduction
+  SET_CAS_ID: (state, cas_id) => {
+    state.cas_id = cas_id
   },
   SET_NAME: (state, name) => {
     state.name = name
   },
-  SET_AVATAR: (state, avatar) => {
-    state.avatar = avatar
+  SET_ROLES: (state, role) => {
+    state.role = role
   },
-  SET_ROLES: (state, roles) => {
-    state.roles = roles
-  }
+  SET_SCORE: (state, score) => {
+    state.score = score
+  },
+  SET_IS_ANE: (state, isAne) => {
+    state.isAne = isAne
+  },
+  SET_IS_VOL: (state, isVol) => {
+    state.isVol = isVol
+  },
+  SET_IS_PITCH: (state, isPitch) => {
+    state.isPitch = isPitch
+  },  
 }
 
 const actions = {
@@ -42,17 +54,29 @@ const actions = {
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
         const { data } = response
+        commit('SET_CAS_ID', data.id)
+        commit('SET_ROLES', data.role)
         resolve()
       }).catch(error => {
         reject(error)
       })
     })
   },
-
-  // get one user name
-  getName({ commit, state }) {
+  getRole({commit}, cas_id) {
     return new Promise((resolve, reject) => {
-      getName().then(response => {
+      getRole(cas_id).then(response => {
+        const { data } = response
+        console.log(data)
+        resolve(data)
+      }).catch(error => {
+        reject(error)
+      })
+    })
+  },
+  // get one user name
+  getName({ commit, state }, id) {
+    return new Promise((resolve, reject) => {
+      getName(id).then(response => {
         const { data } = response
         resolve(data)
       }).catch(error => {
@@ -62,25 +86,17 @@ const actions = {
   },
 
   // get one user info
-  getInfo({ commit, state }) {
+  getInfo({ commit, state }, id=2, name='') {
     return new Promise((resolve, reject) => {
-      getInfo().then(response => {
+      getInfo(id, name).then(response => {
         const { data } = response
-
+        console.log('Information: ', data)
         if (!data) {
           reject('Verification failed, please Login again.')
         }
-        const { intro, name, roles, telephone } = data
-        console.log('intro, name, roles, telephone:', intro, name, roles, telephone)
-        // roles must be a non-empty array
-        if (!roles || roles.length <= 0) {
-          reject('getInfo: roles must be a non-null array!')
-        }
 
-        commit('SET_ROLES', roles)
-        commit('SET_NAME', name)
-        commit('SET_AVATAR', telephone)
-        commit('SET_INTRODUCTION', intro)
+        // commit('SET_ROLES', roles)
+        // commit('SET_NAME', name)
         resolve(data)
         return data
       }).catch(error => {
@@ -119,7 +135,7 @@ const actions = {
   logout({ commit, state, dispatch }) {
     return new Promise((resolve, reject) => {
       logout().then(() => {
-        commit('SET_ROLES', [])
+        commit('SET_ROLES', 'editor')
         resetRouter()
 
         // reset visited views and cached views

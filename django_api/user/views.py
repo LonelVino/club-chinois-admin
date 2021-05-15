@@ -34,26 +34,36 @@ def all_user_infos(request):
 
 def user_name(request):
     if request.method == 'GET':
-        #TODO:get the params from the request of name, and filter from the table User
-        #user_1 = User.objects.filter(name=name)[0].name
+        id = request.GET.get('id',default='1')
+        user_1 = User.objects.filter(id=id)[0]
         return JsonResponse({
             'code': 200,
             'msg': 'Get name successfully',
             'data': {
-                'name': ''
+                'name': user_1.name
             }
         })
 
 def user_info(request):
     if request.method == 'GET':
-        #TODO:get the params from the request of name, and filter from the table User
-        #user_1 = User.objects.filter(name=name)[0]
-        # info = {'id': user_1.id, 'name': user_1.name, 'isAne': user_1.isAne, 'isVol': user_1.isVol, 'isPitch': user_1.isPitch, 'email': user_1.email, 'telephone': user_1.telephone, 'loc': user_1.loc   }
+        id = request.GET.get('id',default=0)
+        name = request.GET.get('name',default='')
+        if id != 0:
+            user_1 = User.objects.filter(id=id)[0]
+        elif name != '':
+            user_1 = User.objects.filter(name=name)[0]
+        else:
+           return JsonResponse({
+            'code': 3005,
+            'msg': 'Parameters does not meet the requirements!'
+        })     
+
+        info = {'id': user_1.id, 'name': user_1.name, 'isAne': user_1.isAne, 'isVol': user_1.isVol, 'isPitch': user_1.isPitch, 'email': user_1.email, 'telephone': user_1.telephone, 'loc': user_1.loc   }
         return JsonResponse({
             'code': 200,
-            'msg': 'Get name successfully',
+            'msg': 'Get information successfully',
             'data': {
-                'info': ''
+                'info': info
             }
         })
 

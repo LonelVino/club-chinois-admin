@@ -2,7 +2,12 @@
 2.mock request of score, instead of articles
 FIGURE OUT HOW THE SIDEBAR WORKS
 3.Add verification of login
-4.Create Database 
-5.Complete the logic of database (ADD, DELETE, QUERY, MODIFY)
+
+## Activity Tables
+4.according to the API document, finish the tables
+
+## Store
+5.add important information in store (Vuex)
+
 6.userinfo get: according by the username while logging in (after finishing the database), now just testing
 7.Add the redirect part

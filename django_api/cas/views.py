@@ -5,31 +5,10 @@ Organize the views of Cas
 '''
 
 import json
+from json.decoder import JSONDecodeError
 from django.http import JsonResponse
 from django.core.handlers.wsgi import WSGIRequest
 from django_api.cas.models import Cas
-
-def get_all_cas(request):
-    all_cas = Cas.objects.all()
-    all_cas_info = []
-    for cas in all_cas:
-        tmp_cas = {'id': cas.id, 'username': cas.username, 'password': cas.password, 'role': cas.role}
-        all_cas_info.append(tmp_cas)
-    if all_cas:
-        print('all_cas:', all_cas, '\n list(all_cas):', list(all_cas) )
-        return JsonResponse({
-            'code': 200,
-            'msg': 'Get all cas successfully!',
-            'data': {
-                'total': len(all_cas),
-                'all_cas': all_cas_info
-            }
-        })
-    else:
-        return JsonResponse({
-            'code': 3000,
-            'msg': 'No cas, the table is empty!'
-        })
 
 def registry(request: WSGIRequest):
     # No validation, pass directly
@@ -60,7 +39,7 @@ def registry(request: WSGIRequest):
             else:
                 return JsonResponse({
                     'code': 3005,
-                    'msg': 'Input does not meet the requirements!'
+                    'msg': 'Parameters does not meet the requirements!'
                 })
 
 
@@ -73,7 +52,7 @@ def login(request: WSGIRequest):
         all_cas = Cas.objects.all()
         cas_1 = list(Cas.objects.filter(username=usr))[0]
         if cas_1:
-            cas_info = {'id': cas_1.id, 'username': cas_1.username, 'password': cas_1.password, 'role': cas_1.role}
+            cas_info = {'id': cas_1.id, 'username': cas_1.username, 'role': cas_1.role}
             if cas_1.password == pwd:
                 return JsonResponse({
                     'code': 200,
@@ -96,4 +75,41 @@ def logout(request):
     return JsonResponse({
         'code': 200,\
         'msg': 'Log out successfully!'
+        })
+
+
+
+def get_all_cas(request):
+    all_cas = Cas.objects.all()
+    all_cas_info = []
+    for cas in all_cas:
+        tmp_cas = {'id': cas.id, 'username': cas.username, 'password': cas.password, 'role': cas.role}
+        all_cas_info.append(tmp_cas)
+    if all_cas:
+        print('all_cas:', all_cas, '\n list(all_cas):', list(all_cas) )
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Get all cas successfully!',
+            'data': {
+                'total': len(all_cas),
+                'all_cas': all_cas_info
+            }
+        })
+    else:
+        return JsonResponse({
+            'code': 3000,
+            'msg': 'No cas, the table is empty!'
+        })
+
+
+def get_role(request):
+    if request.method == 'GET':
+        id = request.GET.get('cas_id',default='2')
+        cas1 = Cas.objects.filter(id=id)[0]
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Get role successfully!!',
+            'data': {
+                'role': cas1.role
+            }
         })

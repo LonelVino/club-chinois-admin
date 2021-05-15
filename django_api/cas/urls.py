@@ -12,6 +12,7 @@ urlpatterns = [
     path('/login', views.login),
     path('/logout', views.logout),
 
+    path('/get_role', views.get_role),
     path('/getall', views.get_all_cas),
 
 ]

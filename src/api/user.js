@@ -27,17 +27,23 @@ export function logout() {
   })
 }
 
-
-export function getName() {
+export function getRole(cas_id) {
   return request({
-    url: BASE_URL + '/one_name',
+    url: BASE_URL + '/one_name?cas_id=' + cas_id,
     method: 'get',
   })
 }
 
-export function getInfo() {
+export function getName(id) {
   return request({
-    url:  BASE_URL + '/one_info',
+    url: BASE_URL + '/one_name?id=' + id,
+    method: 'get',
+  })
+}
+
+export function getInfo(id, name) {
+  return request({
+    url:  BASE_URL + '/one_info?id='+id +'&name=' + name,
     method: 'get',
   })
 }

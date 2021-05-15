@@ -3,32 +3,26 @@ import Layout from '@/layout'
 const tableRouter = {
     path: '/table',
     component: Layout,
-    redirect: '/table/complex-table',
+    redirect: '/table/pitch-table',
     name: 'Table',
     children: [
         {
-          path: 'dynamic-table',
-          component: () => import('@/views/table/dynamic-table/index'),
-          name: 'DynamicTable',
-          meta: { title: 'Dynamic Table' }
+          path: 'pitch-table',
+          component: () => import('@/views/table/pitchTable'),
+          name: 'PitchTable',
+          meta: { title: 'Pitch' }
         },
         {
-          path: 'drag-table',
-          component: () => import('@/views/table/drag-table'),
-          name: 'DragTable',
-          meta: { title: 'Drag Table' }
+          path: 'ane-table',
+          component: () => import('@/views/table/aneTable'),
+          name: 'AneTable',
+          meta: { title: 'Ane Rouge' }
         },
         {
-          path: 'inline-edit-table',
-          component: () => import('@/views/table/inline-edit-table'),
-          name: 'InlineEditTable',
-          meta: { title: 'Inline Edit' }
-        },
-        {
-          path: 'complex-table',
-          component: () => import('@/views/table/complex-table'),
-          name: 'ComplexTable',
-          meta: { title: 'Complex Table' }
+          path: 'vol-table',
+          component: () => import('@/views/table/volTable'),
+          name: 'VolantTable',
+          meta: { title: 'Volant Volant' }
         }
       ]
     }
