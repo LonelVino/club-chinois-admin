@@ -2,7 +2,7 @@ import { register, login, logout, getRole, getName, getInfo, getAllNames, getAll
 import router, { resetRouter } from '@/router'
 
 const state = {
-  cas_id: '',
+  cas_id: 0,
   name: '',
   role: '',
   score: '',
@@ -49,7 +49,7 @@ const actions = {
   },
 
   // user login
-  login({ commit }, userInfo) {
+  login({ commit, state }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({ username: username.trim(), password: password }).then(response => {
@@ -136,6 +136,7 @@ const actions = {
     return new Promise((resolve, reject) => {
       logout().then(() => {
         commit('SET_ROLES', 'editor')
+        commit('SET_CAS_ID', 0)
         resetRouter()
 
         // reset visited views and cached views

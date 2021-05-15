@@ -215,13 +215,16 @@ export default {
               console.error('errors in Page jumping\n', e)
               this.loading = false
             })
-            if (this.$store.getters.cas_id==undefined) {
+            if (this.$store.getters.cas_id==undefined || this.$store.getters.cas_id==0) {
               setTimeout(() => {
                 console.log('This cas_id in Store is undefined now....: ', this.$store.getters.cas_id)
+                this.getUserInfo()
               }, 5000);
+            } else {
+              this.getUserInfo()
+              console.log('cas_id in Store: ', this.$store.getters.cas_id)
             }
-            this.getUserInfo()
-            console.log('cas_id in Store: ', this.$store.getters.cas_id)
+            
           
         } else {
           console.log('error submit!!')
@@ -231,7 +234,7 @@ export default {
     },
 
     async getUserInfo() {
-      await this.$store.dispatch('user/getRole', this.cas_id)
+      await this.$store.dispatch('user/getRole', this.$store.getters.cas_id)
       .then(res => {
         const data = res
         // console.log('UserInfo in getUserInfo() in login/index.vue:', data)

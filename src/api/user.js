@@ -29,7 +29,7 @@ export function logout() {
 
 export function getRole(cas_id) {
   return request({
-    url: BASE_URL + '/one_name?cas_id=' + cas_id,
+    url: CAS_BASE_URL + '/get_role?cas_id=' + cas_id,
     method: 'get',
   })
 }

@@ -68,7 +68,7 @@ export default {
     ...mapGetters([
       'sidebar',
       'device'
-    ])
+    ]),
   },
   methods: {
     toggleSideBar() {

@@ -36,12 +36,12 @@ import tableRouter from './modules/table'
  */
 
 export const constantRoutes = [
-  {
-    path: '/',
-    component: () => import('@/views/login/index'),
-    redirect: '/login',
-    name: 'MainPage',
-  },
+  // {
+  //   path: '/',
+  //   component: () => import('@/views/login/index'),
+  //   redirect: '/login',
+  //   name: 'MainPage',
+  // },
   {
     path: '/404',
     component: () => import('@/views/error-page/404'),

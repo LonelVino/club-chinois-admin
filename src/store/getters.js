@@ -6,9 +6,9 @@ const getters = {
   visitedViews: state => state.tagsView.visitedViews,
   cachedViews: state => state.tagsView.cachedViews,
 
-  cas_id: state => state.cas_id,
+  cas_id: state => state.user.cas_id,
   name: state => state.user.name,
-  roles: state => state.user.roles,
+  role: state => state.user.role,
   score: state => state.user.score,
   isAne: state => state.user.isAne,
   isVol: state => state.user.isVol,
