@@ -12,7 +12,7 @@ class Ane(models.Model):
     # Name of ane
     name = models.CharField(max_length=100)
     # if the user finished the game,  - unfinished,  otherwise
-    isFIni = models.BooleanField(default=0)
+    isFini = models.BooleanField(default=0)
     # The time used to finish the game, unfinished -> 0
     time = models.IntegerField(default=0)
     # The score of this user

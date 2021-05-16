@@ -15,10 +15,82 @@ def all_scores(request):
         for i in all_anes:
             scores[i.name] = i.score
         if len(all_anes) >= 0:
-            return JsonResponse({'code': 200,'msg': 'Get names successfully!'})
+            return JsonResponse({
+                'code': 200,
+                'msg': 'get all information successfully',
+                'data': {
+                    'total': len(scores),
+                    'infos': scores
+                }
+            })
         else:
             return JsonResponse({'code': 200, 'msg': 'Empty table!'})
 
+def one_score(request):
+    if request.method == 'GET':
+        id = request.GET.get('id',default=0)
+        name = request.GET.get('name',default='')
+        if id != 0:
+            Ane.objects.filter(id=id)[0]
+        elif name != '':
+            ane_1 = Ane.objects.filter(name=name)[0]
+        else:
+           return JsonResponse({
+            'code': 3005,
+            'msg': 'Parameters does not meet the requirements!'
+        })     
+
+        info = {'id': ane_1.id, 'name': ane_1.name, 'isFini': ane_1.isFini, 'a_score': ane_1.a_score}
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Get information successfully',
+            'data': {
+                'info': info
+            }
+        })
 
 def add_score(request):
-    return JsonResponse({'volant': '踢毽子'}, {'ane_rouge': '华容道'}, {'pitch': '投壶'})
+    if request.method == 'POST':
+        received_json_data = json.loads(request.body)
+        rec = received_json_data
+        ane_1 = Ane(name=rec['name'], isFini=rec['isFini'], time=rec['time'], a_score=rec['a_score'])
+        ane_1.save()
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Add Successfully!',
+            'data':{
+                'name': rec['name']
+            }
+        })
+
+def update_score(request):
+    if request.method == 'POST':
+        received_json_data = json.loads(request.body)
+        rec = received_json_data
+        ane_1 = Ane(name=rec['name'], isFini=rec['isFini'], time=rec['time'], a_score=rec['a_score'])
+        ane_1.save()
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Update Successfully!',
+            'data':{
+                'name': rec['name']
+            }
+        })
+
+def a_score_delete_byId(request):
+    try:
+        id = request.GET.get('id')
+    except:
+        pass
+    if id:
+        print(id)
+        Ane.objects.filter(id=id).delete()
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Delete successfully!',
+        })
+    else:
+        return JsonResponse({
+            'code': 404,
+            'msg': 'Delete failed!'
+        })
