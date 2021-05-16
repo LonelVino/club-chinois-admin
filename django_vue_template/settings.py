@@ -26,6 +26,18 @@ if os.path.isfile(dotenv_file):
     dotenv.load_dotenv(dotenv_file)
 
 
+# Database
+# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'worldWeek.db',
+    }
+}
+
+# DATABASES['default'].update(db_from_env)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
@@ -120,17 +132,6 @@ CORS_ORIGIN_WHITELIST = (
 WSGI_APPLICATION = 'django_vue_template.wsgi.application'
 
 
-# Database
-# https://docs.djangoproject.com/en/3.2/ref/settings/#databases
-
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'worldWeek.db',
-    }
-}
-
-DATABASES['default'].update(db_from_env)
 
 # # clear the DATABASES variable and then set the 'default' key using the dj_database_url module.
 # DATABASES = {}
