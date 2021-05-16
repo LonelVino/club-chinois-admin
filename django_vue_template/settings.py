@@ -129,9 +129,9 @@ DATABASES = {
         'NAME': BASE_DIR / 'worldWeek.db',
     }
 }
-# clear the DATABASES variable and then set the 'default' key using the dj_database_url module.
-db_from_env = dj_database_url.config(conn_max_age=600)
-DATABASES['default'].update(db_from_env)
+# # clear the DATABASES variable and then set the 'default' key using the dj_database_url module.
+# db_from_env = dj_database_url.config(conn_max_age=600)
+# DATABASES['default'].update(db_from_env)
 
 
 
