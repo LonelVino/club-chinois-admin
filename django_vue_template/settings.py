@@ -107,6 +107,7 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:8080', # Frontend on dev mode
     'http://localhost:8081', # Frontend on dev mode
     'http://127.0.0.1:8000',   # Backend    
+    'http://localhost:8000', 
     'https://127.0.0.1:8000',   # Backend    
     'http://world-week-test.herokuapp.com',
     'http://club-chinois.herokuapp.com',
