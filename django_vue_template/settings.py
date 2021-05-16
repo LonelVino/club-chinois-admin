@@ -12,9 +12,16 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 import os
+import dj_database_url
+import dotenv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+# Load environment variables from .env if it exists:
+dotenv_file = os.path.join(BASE_DIR, ".env")
+if os.path.isfile(dotenv_file):
+    dotenv.load_dotenv(dotenv_file)
 
 
 # Quick-start development settings - unsuitable for production
@@ -52,12 +59,12 @@ INSTALLED_APPS = [
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
     'django.middleware.common.CommonMiddleware',
     # 'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'corsheaders.middleware.CorsMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',
 ]
 
@@ -99,7 +106,11 @@ CORS_ORIGIN_WHITELIST = (
     'http://127.0.0.1:8081',    # Frontend on dev mode
     'http://localhost:8080', # Frontend on dev mode
     'http://localhost:8081', # Frontend on dev mode
-    'https://127.0.0.1:8000',   # Backend        
+    'https://127.0.0.1:8000',   # Backend    
+    'http://world-week-test.herokuapp.com',
+    'http://club-chinois.herokuapp.com',
+    'https://club-chinois.herokuapp.com',
+    'https://world-week-test.herokuapp.com',
 )
 
 WSGI_APPLICATION = 'django_vue_template.wsgi.application'
@@ -108,12 +119,16 @@ WSGI_APPLICATION = 'django_vue_template.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'worldWeek.db',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'worldWeek.db',
+#     }
+# }
+
+## clear the DATABASES variable and then set the 'default' key using the dj_database_url module.
+DATABASES = {}
+DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 
 
 # Password validation
@@ -157,3 +172,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # 扩展 Model
 # AUTH_USER_MODEL = 'info.UserInfo'
 
+options = DATABASES['default'].get('OPTIONS', {})
+options.pop('sslmode', None)
