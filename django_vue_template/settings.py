@@ -15,8 +15,6 @@ import os
 # import dotenv
 import dj_database_url
 
-db_from_env = dj_database_url.config(conn_max_age=500)
-
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -131,11 +129,10 @@ DATABASES = {
         'NAME': BASE_DIR / 'worldWeek.db',
     }
 }
-# DATABASES['default'].update(db_from_env)
+# clear the DATABASES variable and then set the 'default' key using the dj_database_url module.
+db_from_env = dj_database_url.config(conn_max_age=600)
+DATABASES['default'].update(db_from_env)
 
-# # clear the DATABASES variable and then set the 'default' key using the dj_database_url module.
-# DATABASES = {}
-# DATABASES['default'] = dj_database_url.config(conn_max_age=600)
 
 
 # Password validation

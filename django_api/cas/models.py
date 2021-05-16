@@ -11,7 +11,7 @@ from django.utils import timezone
 # Cas model
 class Cas(models.Model):
     # Account
-    username = models.CharField(max_length=100)
+    username = models.CharField(max_length=100, default='None')
     # PWD
     password = models.TextField()
     # Role
@@ -24,3 +24,6 @@ class Cas(models.Model):
 
     class Meta:
         db_table = 'Cas'
+
+    def __str__(self):
+        return 'User {}'.format(self.id)
