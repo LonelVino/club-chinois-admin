@@ -17,6 +17,8 @@ class Pitch(models.Model):
     time = models.IntegerField(default=0)
     # The score of this user
     p_score = models.IntegerField(default=0)
+    # The comment of this user
+    comment = models.TextField(default='None')
     # 创建时间
     created = models.DateTimeField(default=timezone.now)
     # 更新时间

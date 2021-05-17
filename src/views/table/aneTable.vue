@@ -22,7 +22,7 @@
         Export
       </el-button>
       <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
-        reviewer
+        show comments
       </el-checkbox>
     </div>
 
@@ -61,9 +61,9 @@
           <span>{{ row.a_score }}</span>
         </template>
       </el-table-column>
-      <el-table-column v-if="showReviewer" label="Comments" width="80px">
+      <el-table-column v-if="showReviewer" label="Comments" width="200">
         <template slot-scope="{row}">
-          <span style="color:red;">{{ row.name }}</span>
+          <span style="color:red;">{{ row.comment }}</span>
         </template>
       </el-table-column>
 
@@ -72,7 +72,7 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             Edit
           </el-button>
-          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button size="mini" type="danger" @click="confirmDelete(row,$index)">
             Delete
           </el-button>
         </template>
@@ -93,6 +93,9 @@
         </el-form-item>
         <el-form-item label="Score" prop="a_score" required>
           <el-input  type="number" v-model="temp.a_score" />
+        </el-form-item>
+        <el-form-item label="Comment">
+          <el-input  v-model="temp.comment" />
         </el-form-item>
 
       </el-form>
@@ -163,13 +166,14 @@ export default {
       calendarTypeOptions,
       sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['published', 'draft', 'deleted'],
-      showReviewer: false,
+      showReviewer: true,
       temp: {
         id: undefined,
         name: 'None',
         isFini: 0,
         a_score: 0,
         time: 0,
+        comment: ''
       },
 
       dialogFormVisible: false,
@@ -201,7 +205,6 @@ export default {
         }, 1.5 * 1000)
       })
     },
-
     //TODO: Pagination 
     handleFilter() {
       this.listQuery.page = 1
@@ -237,6 +240,7 @@ export default {
         isFini: 0,
         a_score: 0,
         time: 0,
+        comment: ''
       }
     },
     handleCreate() {
@@ -295,13 +299,36 @@ export default {
         }
       })
     },
-    handleDelete(row, index) {
-      this.$notify({
-        title: 'Success',
-        message: 'Delete Successfully',
-        type: 'success',
-        duration: 2000
+    confirmDelete(row, index) {
+      this.$confirm('This operation will delete this information forever, are you sure?', 'Note', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          this.handleDelete(index)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Delete cancled'
+          });          
+        });
+    },
+    handleDelete(index) {
+      deleteScore(index).then(res => {
+        this.$notify({
+          title: 'Success',
+          message: 'Delete Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(e => {
+        console.error(e)
+        this.$message({
+          type: 'danger',
+          message: 'Delete failed, ' + e
+        });      
       })
+      
       this.list.splice(index, 1)
     },
     handleDownload() {
