@@ -45,11 +45,6 @@
           <span>{{ row.number }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="Time" class-name="status-col" align="center" width="100">
-        <template slot-scope="{row}">
-          <span>{{ row.time }}</span> s
-        </template>
-      </el-table-column>
       <el-table-column label="Score" sortable="custom" width="100px" align="center">
         <template slot-scope="{row}">
           <span>{{ row.v_score }}</span>
@@ -82,9 +77,6 @@
         </el-form-item>
         <el-form-item label="Number" prop="number" required>
           <el-input v-model="temp.number" />
-        </el-form-item>
-        <el-form-item label="Time" prop="time"  required>
-          <el-input  type="number" v-model="temp.time" />
         </el-form-item>
         <el-form-item label="Score" prop="v_score" required>
           <el-input  type="number" v-model="temp.v_score" />
@@ -356,8 +348,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['ID', 'name', 'number', 'Time', 'Score', 'Comments']
-        const filterVal = ['id', 'name', 'number', 'time', 'v_score', 'comment']
+        const tHeader = ['ID', 'name', 'number', 'Score', 'Comments']
+        const filterVal = ['id', 'name', 'number', 'v_score', 'comment']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,

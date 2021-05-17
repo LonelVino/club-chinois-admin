@@ -30,6 +30,7 @@ def all_user_infos(request):
             tmp_user = {}
             tmp_user['id'] = user.id; tmp_user['name'] = user.name; tmp_user['isAne'] = user.isAne;  tmp_user['isVol'] = user.isVol;  tmp_user['isPitch'] = user.isPitch;
             tmp_user['score'] = user.score; tmp_user['email'] = user.email; tmp_user['telephone'] = user.telephone; tmp_user['loc'] = user.loc;
+            tmp_user['pays'] = user.pays
             all_infos.append(tmp_user)
         return JsonResponse({
             'code': 200,
@@ -81,7 +82,7 @@ def add_info(request):
         received_json_data = json.loads(request.body)
         rec = received_json_data
         user_1 = User(name=rec['name'], isAne=rec['isAne'], isVol=rec['isVol'], isPitch=rec['isPitch'], 
-        score=rec['score'],telephone=rec['telephone'], email=rec['email'], loc=rec['loc'])
+        score=rec['score'],telephone=rec['telephone'], email=rec['email'], loc=rec['loc'], pays=rec['pays'])
         user_1.save()
         return JsonResponse({
             'code': 200,
@@ -95,8 +96,10 @@ def update_info(request):
     if request.method == 'PUT':
         received_json_data = json.loads(request.body)
         rec = received_json_data
-        user_1 = User(name=rec['name'], isAne=rec['isAne'], isVol=rec['isVol'], isPitch=rec['isPitch'], telephone=rec['telephone'],
-        email=rec['email'], loc=rec['loc'])
+        user_1 = User.objects.get(id = rec['id'])
+        user_1.name=rec['name']; user_1.isAne=rec['isAne']; user_1.isVol=rec['isVol']
+        user_1.isPitch=rec['isPitch']; user_1.score=rec['score']; user_1.telephone=rec['telephone']
+        user_1.email=rec['email']; user_1.loc=rec['loc']; user_1.pays=rec['pays']
         user_1.save()
         return JsonResponse({
             'code': 200,
@@ -128,7 +131,7 @@ def user_delete_byId(request):
 
 def test_add(request):
     # 添加数据
-    test1 = User(name='runoob', isAne=1, isVol=1, isPitch=1, email='', telephone='',score=0,loc='')
+    test1 = User(name='runoob', isAne=1, isVol=1, isPitch=1, email='', telephone='',score=0,loc='', pays='Chine')
     test1.save()
     all_users =  User.objects.all()
     if all_users:

@@ -26,6 +26,8 @@ class User(models.Model):
     score = models.IntegerField()  
     # Location of the Logement
     loc = models.TextField()
+    # Pays
+    pays = models.CharField(max_length=100, default='None')
     # 创建时间
     created = models.DateTimeField(default=timezone.now)
     # 更新时间

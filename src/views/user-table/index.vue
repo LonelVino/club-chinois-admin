@@ -1,16 +1,7 @@
 <template>
   <div class="app-container">
     <div class="filter-container">
-      <el-input v-model="listQuery.title" placeholder="Title" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      <el-select v-model="listQuery.importance" placeholder="Imp" clearable style="width: 90px" class="filter-item">
-        <el-option v-for="item in importanceOptions" :key="item" :label="item" :value="item" />
-      </el-select>
-      <el-select v-model="listQuery.type" placeholder="Type" clearable class="filter-item" style="width: 130px">
-        <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name+'('+item.key+')'" :value="item.key" />
-      </el-select>
-      <el-select v-model="listQuery.sort" style="width: 140px" class="filter-item" @change="handleFilter">
-        <el-option v-for="item in sortOptions" :key="item.key" :label="item.label" :value="item.key" />
-      </el-select>
+      <el-input v-model="listQuery.name" placeholder="Name" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
@@ -36,7 +27,7 @@
       style="width: 100%;"
       @sort-change="sortChange"
     >
-      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80" :class-name="getSortClass('id')">
+      <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80">
         <template slot-scope="{row}">
           <span>{{ row.id }}</span>
         </template>
@@ -68,9 +59,9 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="telephone" class-name="status-col" width="200">
+      <el-table-column label="Country" width="100px" sortable="custom" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.telephone }}</span>          
+          <span>{{ row.pays }}</span>
         </template>
       </el-table-column>
 
@@ -79,6 +70,13 @@
           <span>{{ row.email }}</span>          
         </template>
       </el-table-column>
+
+      <el-table-column label="telephone" class-name="status-col" width="200">
+        <template slot-scope="{row}">
+          <span>{{ row.telephone }}</span>          
+        </template>
+      </el-table-column>
+
 
       <el-table-column label="Loc" class-name="status-col" width="100">
         <template slot-scope="{row}">
@@ -120,11 +118,14 @@
         <el-form-item label="Score" prop="score" label-width="130px">
           <el-input v-model="temp.score" />
         </el-form-item>
-        <el-form-item label="Telephone" prop="telephone" label-width="130px">
-          <el-input v-model="temp.telephone" />
+        <el-form-item label="Country" prop="pays" label-width="130px">
+          <el-input v-model="temp.pays" />
         </el-form-item>
         <el-form-item label="Email" prop="email" label-width="100px">
           <el-input v-model="temp.email" />
+        </el-form-item>
+        <el-form-item label="Telephone" prop="telephone" label-width="130px">
+          <el-input v-model="temp.telephone" />
         </el-form-item>
         <el-form-item label="Location" prop="loc" label-width="100px">
           <el-input v-model="temp.loc" />
@@ -148,18 +149,6 @@ import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 
-const calendarTypeOptions = [
-  { key: 'CN', display_name: 'China' },
-  { key: 'US', display_name: 'USA' },
-  { key: 'JP', display_name: 'Japan' },
-  { key: 'EU', display_name: 'Eurozone' }
-]
-
-// arr to obj, such as { CN : "China", US : "USA" }
-const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
-  acc[cur.key] = cur.display_name
-  return acc
-}, {})
 
 export default {
   name: 'UserTable',
@@ -182,20 +171,15 @@ export default {
     return {
       tableKey: 0,
       list: null,
+      tmp_list: null,
       total: 0,
       listLoading: true,
       listQuery: {
         page: 1,
         limit: 20,
-        importance: undefined,
-        title: undefined,
-        type: undefined,
-        sort: '+id'
+        name: undefined,
       },
 
-      importanceOptions: [1, 2, 3],
-      calendarTypeOptions,
-      sortOptions: [{ label: 'ID Ascending', key: '+id' }, { label: 'ID Descending', key: '-id' }],
       statusOptions: ['deleted'],
       showReviewer: false,
 
@@ -208,7 +192,8 @@ export default {
         score: 0,
         email: '',
         telephone: '',
-        loc: ''
+        loc: '',
+        pays: 'None'
       },
 
       dialogFormVisible: false,
@@ -235,10 +220,12 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
+
       getAllInfos().then(response => {
         // Just to simulate the time of the request
         console.log('response.data.infos:',response.data.infos)
         this.list = response.data.infos
+        this.tmp_list =  response.data.infos
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
@@ -283,7 +270,8 @@ export default {
         score: 0,
         email: '',
         telephone: '',
-        loc: ''
+        loc: '',
+        pays: ''
       }
     },
 
@@ -303,6 +291,7 @@ export default {
             this.confirmLoading = true
             this.list.unshift(this.temp)
             this.dialogFormVisible = false
+            this.confirmLoading = false
             this.$notify({
               title: 'Success',
               message: 'Created Successfully',
@@ -312,7 +301,6 @@ export default {
           }).catch( err => {
             console.error(err)
           })
-          this.confirmLoading = false
         }
       })
     },
@@ -336,6 +324,7 @@ export default {
             const index = this.list.findIndex(v => v.id === this.temp.id)
             this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
+            this.confirmLoading = false
             this.$notify({
               title: 'Success',
               message: 'Update Successfully',
@@ -345,7 +334,6 @@ export default {
           }).catch(err => {
             console.error(err)
           })
-          this.confirmLoading = false
         }
       })
     },
@@ -367,12 +355,11 @@ export default {
         })
       })
     },
-
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+        const tHeader = ['ID', 'name', 'has Ane', 'has Pitch', 'has Volant', 'Score', 'Email', 'Tel', 'Country']
+        const filterVal = ['id', 'name', 'isAne', 'isPitch', 'isVolant', 'score', 'email', 'telephone', 'pays']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
@@ -391,10 +378,6 @@ export default {
         }
       }))
     },
-    getSortClass: function(key) {
-      const sort = this.listQuery.sort
-      return sort === `+${key}` ? 'ascending' : 'descending'
-    }
   }
 }
 </script>

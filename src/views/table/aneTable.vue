@@ -152,7 +152,7 @@ export default {
         isFini: 0,
         a_score: 0,
         time: 0,
-        comment: ''
+        comment: '',
       },
 
       dialogFormVisible: false,
@@ -254,7 +254,8 @@ export default {
         isFini: 0,
         a_score: 0,
         time: 0,
-        comment: ''
+        comment: '',
+        pays: 'None'
       }
     },
     handleCreate() {
@@ -367,8 +368,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['ID', 'name', 'isFinished', 'Time', 'Score', 'Comments']
-        const filterVal = ['id', 'name', 'isFini', 'time', 'a_score', 'comment']
+        const tHeader = ['ID', 'name', 'isFinished', 'Time', 'Score', 'Country', 'Comments']
+        const filterVal = ['id', 'name', 'isFini', 'time', 'a_score', 'pays', 'comment']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
