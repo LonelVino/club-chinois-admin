@@ -5,6 +5,7 @@
 4.Add verification of login
 
 ## Activity Tables
+Too many duplicated part between vol and pitch, try to merge these 2 parts in to 1 module, use class or smth else
 
 ## Store
 5.FIx the uncachable problem (Vuex)

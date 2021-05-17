@@ -1,23 +1,117 @@
 '''
-/django_api/ane/views.py
+/django_api/pitch/views.py
 -------------------------
-Organize the views of Ane 
+Organize the views of pitch 
 '''
 
+
+import json
 from django.http import JsonResponse
 from django_api.pitch.models import Pitch
 
 def all_scores(request):
     if request.method == 'GET':
-        all_anes = list(Pitch.objects.all())
-        scores = {}
-        for i in all_anes:
-            scores[i.name] = i.score
-        if len(all_anes) >= 0:
-            return JsonResponse({'code': 200,'msg': 'Get names successfully!'})
+        all_pitchs = list(Pitch.objects.all())
+        scores = []
+        for i in all_pitchs:
+            tmp = {}
+            tmp['id'] = i.id
+            tmp['name'] = i.name
+            tmp['number'] = i.number
+            tmp['time'] = i.time
+            tmp['p_score'] = i.p_score
+            tmp['comment'] = i.comment
+            scores.append(tmp)
+        if len(all_pitchs) >= 0:
+            return JsonResponse({
+                'code': 200,
+                'msg': 'get all information successfully',
+                'data': {
+                    'total': len(scores),
+                    'infos': scores
+                }
+            })
         else:
             return JsonResponse({'code': 200, 'msg': 'Empty table!'})
 
+def one_score(request):
+    if request.method == 'GET':
+        id = request.GET.get('id',default=0)
+        name = request.GET.get('name',default='')
+        if id != 0:
+            Pitch.objects.filter(id=id)[0]
+        elif name != '':
+            pitch_1 = Pitch.objects.filter(name=name)[0]
+        else:
+           return JsonResponse({
+            'code': 3005,
+            'msg': 'Parameters does not meet the requirements!'
+        })     
 
+        info = {'id': pitch_1.id, 'name': pitch_1.name, 'number': pitch_1.number, 'p_score': pitch_1.p_score, 'time': pitch_1.time, 'comment': pitch_1.comment}
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Get information successfully',
+            'data': {
+                'info': info
+            }
+        })
+
+        
 def add_score(request):
-    return JsonResponse({'volant': '踢毽子'}, {'ane_rouge': '华容道'}, {'pitch': '投壶'})
+    if request.method == 'POST':
+        received_json_data = json.loads(request.body)
+        rec = received_json_data
+        pitch_1 = Pitch(name=rec['name'], number=rec['number'], time=rec['time'], p_score=rec['p_score'], comment=rec['comment'])
+        pitch_1.save()
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Add Successfully!',
+            'data':{
+                'name': rec['name']
+            }
+        })
+
+
+def update_score(request):
+    if request.method == 'PUT':
+        received_json_data = json.loads(request.body)
+        rec = received_json_data
+        pitch_1 = Pitch.objects.get(id = rec['id'])
+        pitch_1.name=rec['name']
+        pitch_1.number=rec['number']
+        pitch_1.time=rec['time']
+        pitch_1.p_score=rec['p_score']
+        pitch_1.comment=rec['comment']
+        pitch_1.save()
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Update Successfully!',
+            'data':{
+                'name': rec['name']
+            }
+        })
+    else: 
+        return JsonResponse({
+            'code': 500,
+            'msg': 'Update Failed, incorrect request method!'
+        })
+
+
+def p_score_delete_byId(request):
+    try:
+        id = request.GET.get('id')
+    except:
+        pass
+    if id:
+        print(id)
+        Pitch.objects.filter(id=id).delete()
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Delete successfully!',
+        })
+    else:
+        return JsonResponse({
+            'code': 404,
+            'msg': 'Delete failed!'
+        })

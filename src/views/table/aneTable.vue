@@ -97,8 +97,8 @@
         <el-form-item label="Comment">
           <el-input  v-model="temp.comment" />
         </el-form-item>
-
       </el-form>
+
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
           Cancel
@@ -132,7 +132,7 @@ const calendarTypeKeyValue = calendarTypeOptions.reduce((acc, cur) => {
 }, {})
 
 export default {
-  name: 'ComplexTable',
+  name: 'AneTable',
   components: { Pagination },
   directives: { waves },
   filters: {
@@ -148,6 +148,7 @@ export default {
       return calendarTypeKeyValue[type]
     }
   },
+
   data() {
     return {
       tableKey: 0,
@@ -175,7 +176,6 @@ export default {
         time: 0,
         comment: ''
       },
-
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -198,7 +198,6 @@ export default {
       this.listLoading = true
       getAllScores().then(response => {
         // Just to simulate the time of the request
-        console.log('RESPONSE OF ALL SCORES: ', response.data)
         this.list = response.data.infos
         setTimeout(() => {
           this.listLoading = false
@@ -257,7 +256,6 @@ export default {
           this.temp.isFini = (this.temp.isFini == true) ? 1 : 0 
           this.temp.time = parseInt(this.temp.time)
           this.temp.a_score = parseInt(this.temp.a_score)
-          console.log('ADD SCORE FORM: ', this.temp)
           addScore(this.temp).then(response => {
             // Just to simulate the time of the request
             console.log(response)
@@ -265,9 +263,10 @@ export default {
               message: 'ADD ' + response.data.name + "'s Score Successfully!",
               type: 'success'
             })
+            this.listLoading = true
+            this.dialogFormVisible = false
             setTimeout(() => {
-              this.listLoading = false
-              this.dialogFormVisible = false
+              this.getList()
             }, 1.5 * 1000)
           }).catch (e => {
             console.error(e)
@@ -277,13 +276,12 @@ export default {
             })
           })
           this.resetTemp()
-          this.getList()
+          location.reload()
         }
       })
     },
     handleUpdate(row) {
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
       this.dialogStatus = 'update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -297,16 +295,15 @@ export default {
           tempData.isFini = (tempData.isFini == true || tempData.isFini == 1) ? 1 : 0 
           tempData.time = parseInt(tempData.time)
           tempData.a_score = parseInt(tempData.a_score)
-          console.log(tempData)
           updateScore(tempData).then(response => {
-            console.log(response)
             this.$message({
               message: 'UPDATE ' + response.data.name + "'s Score Successfully!",
               type: 'success'
             })
+            this.listLoading = true
+            this.dialogFormVisible = false
             setTimeout(() => {
-              this.listLoading = false
-              this.dialogFormVisible = false
+              this.getList()
             }, 1.5 * 1000)
           }).catch (e => {
             console.error(e)
@@ -317,7 +314,7 @@ export default {
           })
         }
         this.resetTemp()
-        this.getList()
+        location.reload()
       })
     },
     confirmDelete(row, index) {
