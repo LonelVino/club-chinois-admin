@@ -113,7 +113,7 @@
 </template>
 
 <script>
-import {getScore, getAllScores, addScore, updateInfo, deleteScore} from '@/api/ane'
+import {getScore, getAllScores, addScore, updateScore, deleteScore} from '@/api/ane'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -262,7 +262,7 @@ export default {
             // Just to simulate the time of the request
             console.log(response)
             this.$message({
-              message: 'add Score Success!',
+              message: 'ADD ' + response.data.name + "'s Score Successfully!",
               type: 'success'
             })
             setTimeout(() => {
@@ -272,7 +272,7 @@ export default {
           }).catch (e => {
             console.error(e)
             this.$message({
-              message: 'add Score failed!',
+              message: 'ADD Score failed!',
               type: 'danger'
             })
           })
@@ -294,9 +294,30 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          console.log('update data here')
+          tempData.isFini = (tempData.isFini == true || tempData.isFini == 1) ? 1 : 0 
+          tempData.time = parseInt(tempData.time)
+          tempData.a_score = parseInt(tempData.a_score)
+          console.log(tempData)
+          updateScore(tempData).then(response => {
+            console.log(response)
+            this.$message({
+              message: 'UPDATE ' + response.data.name + "'s Score Successfully!",
+              type: 'success'
+            })
+            setTimeout(() => {
+              this.listLoading = false
+              this.dialogFormVisible = false
+            }, 1.5 * 1000)
+          }).catch (e => {
+            console.error(e)
+            this.$message({
+              message: 'UPDATE Score failed!',
+              type: 'danger'
+            })
+          })
         }
+        this.resetTemp()
+        this.getList()
       })
     },
     confirmDelete(row, index) {

@@ -74,7 +74,12 @@ def update_score(request):
     if request.method == 'PUT':
         received_json_data = json.loads(request.body)
         rec = received_json_data
-        ane_1 = Ane(name=rec['name'], isFini=rec['isFini'], time=rec['time'], a_score=rec['a_score'], comment=rec['comment'])
+        ane_1 = Ane.objects.get(id = rec['id'])
+        ane_1.name=rec['name']
+        ane_1.isFini=rec['isFini']
+        ane_1.time=rec['time']
+        ane_1.a_score=rec['a_score']
+        ane_1.comment=rec['comment']
         ane_1.save()
         return JsonResponse({
             'code': 200,
