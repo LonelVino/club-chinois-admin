@@ -43,29 +43,27 @@
       </el-table-column>
       <el-table-column label="Name" width="200px" align="center">
         <template slot-scope="{row}">
-          <span>{{ row.author }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="Date" width="150px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.timestamp | parseTime('{y}-{m}-{d} {h}:{i}') }}</span>
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="isFini" class-name="status-col" width="100">
         <template slot-scope="{row}">
-          <el-tag :type="row.status | statusFilter">
-            {{ row.status }}
-          </el-tag>
+          <span>{{ row.isFini }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="Time" class-name="status-col" width="100">
+        <template slot-scope="{row}">
+          <span>{{ row.time }}</span> s
         </template>
       </el-table-column>
       <el-table-column label="Score" width="80px">
         <template slot-scope="{row}">
-          <svg-icon v-for="n in + row.importance" :key="n" icon-class="star" class="meta-item__icon" />
+          <span>{{ row.a_score }}</span>
         </template>
       </el-table-column>
       <el-table-column v-if="showReviewer" label="Comments" width="80px">
         <template slot-scope="{row}">
-          <span style="color:red;">{{ row.reviewer }}</span>
+          <span style="color:red;">{{ row.name }}</span>
         </template>
       </el-table-column>
 
@@ -74,13 +72,7 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             Edit
           </el-button>
-          <el-button v-if="row.status!='published'" size="mini" type="success" @click="handleModifyStatus(row,'published')">
-            Publish
-          </el-button>
-          <el-button v-if="row.status!='draft'" size="mini" @click="handleModifyStatus(row,'draft')">
-            Draft
-          </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row,$index)">
+          <el-button size="mini" type="danger" @click="handleDelete(row,$index)">
             Delete
           </el-button>
         </template>
@@ -88,31 +80,21 @@
     </el-table>
 
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
-
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
-      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="70px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="Type" prop="type">
-          <el-select v-model="temp.type" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in calendarTypeOptions" :key="item.key" :label="item.display_name" :value="item.key" />
-          </el-select>
+      <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
+        <el-form-item label="Name" prop="name" required>
+          <el-input v-model="temp.name" />
         </el-form-item>
-        <el-form-item label="Date" prop="timestamp">
-          <el-date-picker v-model="temp.timestamp" type="datetime" placeholder="Please pick a date" />
+        <el-form-item label="isFini?">
+          <el-switch v-model="temp.isFini"></el-switch>
         </el-form-item>
-        <el-form-item label="Title" prop="title">
-          <el-input v-model="temp.title" />
+        <el-form-item label="Time" prop="time"  required>
+          <el-input  type="number" v-model="temp.time" />
         </el-form-item>
-        <el-form-item label="Status">
-          <el-select v-model="temp.status" class="filter-item" placeholder="Please select">
-            <el-option v-for="item in statusOptions" :key="item" :label="item" :value="item" />
-          </el-select>
+        <el-form-item label="Score" prop="a_score" required>
+          <el-input  type="number" v-model="temp.a_score" />
         </el-form-item>
-        <el-form-item label="Imp">
-          <el-rate v-model="temp.importance" :colors="['#99A9BF', '#F7BA2A', '#FF9900']" :max="3" style="margin-top:8px;" />
-        </el-form-item>
-        <el-form-item label="Remark">
-          <el-input v-model="temp.remark" :autosize="{ minRows: 2, maxRows: 4}" type="textarea" placeholder="Please input" />
-        </el-form-item>
+
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -124,21 +106,11 @@
       </div>
     </el-dialog>
 
-    <el-dialog :visible.sync="dialogPvVisible" title="Reading statistics">
-      <el-table :data="pvData" border fit highlight-current-row style="width: 100%">
-        <el-table-column prop="key" label="Channel" />
-        <el-table-column prop="pv" label="Pv" />
-      </el-table>
-      <span slot="footer" class="dialog-footer">
-        <el-button type="primary" @click="dialogPvVisible = false">Confirm</el-button>
-      </span>
-    </el-dialog>
   </div>
 </template>
 
 <script>
-import {getAllInfos} from '@/api/user'
-import { fetchList, fetchPv, createArticle, updateArticle } from '@/api/article'
+import {getScore, getAllScores, addScore, updateInfo, deleteScore} from '@/api/ane'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -194,25 +166,22 @@ export default {
       showReviewer: false,
       temp: {
         id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        type: '',
-        status: 'published'
+        name: 'None',
+        isFini: 0,
+        a_score: 0,
+        time: 0,
       },
+
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
         update: 'Edit',
         create: 'Create'
       },
-      dialogPvVisible: false,
-      pvData: [],
       rules: {
-        type: [{ required: true, message: 'type is required', trigger: 'change' }],
-        timestamp: [{ type: 'date', required: true, message: 'timestamp is required', trigger: 'change' }],
-        title: [{ required: true, message: 'title is required', trigger: 'blur' }]
+        name: [{ required: true, message: 'name is required', trigger: 'blur' }],
+        time: [{  required: true, message: 'time is required and should be a number', trigger: 'blur' }],
+        a_score: [{ required: true, message: 'score is required  and should be a number', trigger: 'blur' }]
       },
       downloadLoading: false
     }
@@ -223,14 +192,16 @@ export default {
   methods: {
     getList() {
       this.listLoading = true
-      getAllInfos().then(response => {
+      getAllScores().then(response => {
         // Just to simulate the time of the request
-        console.log(response)
+        console.log('RESPONSE OF ALL SCORES: ', response.data)
+        this.list = response.data.infos
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
       })
     },
+
     //TODO: Pagination 
     handleFilter() {
       this.listQuery.page = 1
@@ -258,15 +229,14 @@ export default {
       }
       this.handleFilter()
     },
+
     resetTemp() {
       this.temp = {
         id: undefined,
-        importance: 1,
-        remark: '',
-        timestamp: new Date(),
-        title: '',
-        status: 'published',
-        type: ''
+        name: 'None',
+        isFini: 0,
+        a_score: 0,
+        time: 0,
       }
     },
     handleCreate() {
@@ -280,18 +250,30 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.id = parseInt(Math.random() * 100) + 1024 // mock a id
-          this.temp.author = 'vue-element-admin'
-          createArticle(this.temp).then(() => {
-            this.list.unshift(this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Created Successfully',
-              type: 'success',
-              duration: 2000
+          this.temp.isFini = (this.temp.isFini == true) ? 1 : 0 
+          this.temp.time = parseInt(this.temp.time)
+          this.temp.a_score = parseInt(this.temp.a_score)
+          console.log('ADD SCORE FORM: ', this.temp)
+          addScore(this.temp).then(response => {
+            // Just to simulate the time of the request
+            console.log(response)
+            this.$message({
+              message: 'add Score Success!',
+              type: 'success'
+            })
+            setTimeout(() => {
+              this.listLoading = false
+              this.dialogFormVisible = false
+            }, 1.5 * 1000)
+          }).catch (e => {
+            console.error(e)
+            this.$message({
+              message: 'add Score failed!',
+              type: 'danger'
             })
           })
+          this.resetTemp()
+          this.getList()
         }
       })
     },
@@ -309,17 +291,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
-          updateArticle(tempData).then(() => {
-            const index = this.list.findIndex(v => v.id === this.temp.id)
-            this.list.splice(index, 1, this.temp)
-            this.dialogFormVisible = false
-            this.$notify({
-              title: 'Success',
-              message: 'Update Successfully',
-              type: 'success',
-              duration: 2000
-            })
-          })
+          console.log('update data here')
         }
       })
     },
@@ -331,12 +303,6 @@ export default {
         duration: 2000
       })
       this.list.splice(index, 1)
-    },
-    handleFetchPv(pv) {
-      fetchPv(pv).then(response => {
-        this.pvData = response.data.pvData
-        this.dialogPvVisible = true
-      })
     },
     handleDownload() {
       this.downloadLoading = true

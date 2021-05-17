@@ -92,7 +92,7 @@ def add_info(request):
         })
 
 def update_info(request):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         received_json_data = json.loads(request.body)
         rec = received_json_data
         user_1 = User(name=rec['name'], isAne=rec['isAne'], isVol=rec['isVol'], isPitch=rec['isPitch'], telephone=rec['telephone'],

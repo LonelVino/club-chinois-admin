@@ -11,9 +11,15 @@ from django_api.ane.models import Ane
 def all_scores(request):
     if request.method == 'GET':
         all_anes = list(Ane.objects.all())
-        scores = {}
+        scores = []
         for i in all_anes:
-            scores[i.name] = i.score
+            tmp = {}
+            tmp['id'] = i.id
+            tmp['name'] = i.name
+            tmp['isFini'] = i.isFini
+            tmp['time'] = i.time
+            tmp['a_score'] = i.a_score
+            scores.append(tmp)
         if len(all_anes) >= 0:
             return JsonResponse({
                 'code': 200,
@@ -64,7 +70,7 @@ def add_score(request):
         })
 
 def update_score(request):
-    if request.method == 'POST':
+    if request.method == 'PUT':
         received_json_data = json.loads(request.body)
         rec = received_json_data
         ane_1 = Ane(name=rec['name'], isFini=rec['isFini'], time=rec['time'], a_score=rec['a_score'])

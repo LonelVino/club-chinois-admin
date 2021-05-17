@@ -201,7 +201,7 @@ export default {
 
       temp: {
         id: undefined,
-        name: '',
+        name: 'None',
         isAne: 0,
         isVol: 0,
         isPitch: 0,

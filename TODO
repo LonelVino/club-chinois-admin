@@ -1,10 +1,10 @@
 1.SVG doesn't show 
-2.mock request of score, instead of articles
-FIGURE OUT HOW THE SIDEBAR WORKS
-3.Add verification of login
+2.Pagination and Search function
+
+3.FIGURE OUT HOW THE SIDEBAR WORKS
+4.Add verification of login
 
 ## Activity Tables
-4.according to the API document, finish the tables
 
 ## Store
 5.FIx the uncachable problem (Vuex)

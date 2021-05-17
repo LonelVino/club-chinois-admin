@@ -15,4 +15,6 @@ urlpatterns = [
     path('get_role', views.get_role),
     path('getall', views.get_all_cas),
 
+    path('update_cas', views.update_cas),
+
 ]

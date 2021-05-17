@@ -12,5 +12,5 @@ urlpatterns = [
     path('one_score', views.one_score),
     path('add_score', views.add_score),
     path('update_score', views.update_score),
-    path('delete_score', views.a_score_delete_byId),
+    path('del_score', views.a_score_delete_byId),
 ]

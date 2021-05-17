@@ -77,6 +77,20 @@ def logout(request):
         'msg': 'Log out successfully!'
         })
 
+def update_cas(request):
+    if request.method == 'PUT':
+        received_json_data = json.loads(request.body)
+        rec = received_json_data
+        cas_1 = Cas(username=rec['username'], password=rec['password'])
+        cas_1.save()
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Update Successfully!',
+            'data':{
+                'username': rec['username']
+            }
+        })
+
 
 
 def get_all_cas(request):
