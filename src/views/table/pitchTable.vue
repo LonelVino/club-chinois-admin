@@ -349,13 +349,13 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['timestamp', 'title', 'type', 'importance', 'status']
-        const filterVal = ['timestamp', 'title', 'type', 'importance', 'status']
+        const tHeader = ['ID', 'name', 'number', 'Time', 'Score', 'Comments']
+        const filterVal = ['id', 'name', 'number', 'time', 'p_score', 'comment']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: 'table-list'
+          filename: 'pitch-pot-table'
         })
         this.downloadLoading = false
       })
