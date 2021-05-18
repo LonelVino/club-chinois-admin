@@ -1,5 +1,30 @@
 <template>
   <div class="app-container">
+    <el-collapse v-model="activeNames" @change="handleChange"  style="font-weight: bolder">
+      <el-collapse-item>
+        <template slot="title" style="font-weight:bolder;">
+          <i class="el-icon-arrow-left"></i> HINTS OF PITCH POT TABLE<i class="el-icon-arrow-right"></i>  <i class="el-icon-star-on"></i>
+        </template>
+        <el-collapse-item title="General Hints of Usage" name="1" style="font-weight: bolder">
+          <div>      <p class="note-txt"> 1.It's available to modify the value of the table by double-clicking the content of the table</p>  </div>
+          <div>      <p class="note-txt"> 2.But while doing so, you can only modify one row at a time, editing multiple rows of data is not suggested and allowed.</p>  </div>
+        </el-collapse-item>
+        <el-collapse-item title="Usage of the 5 ACTION BUTTONS" name="3" style="font-weight: bolder">
+          <div class="button-hints" style="display:flex; flex-direction: row; justify-content: flex-start; margin: 10px 0;">
+            <div style="margin: 0 0.3vw"><el-button type="primary" style='padding: -8px 0'>submit</el-button> <i class="el-icon-right"></i><el-tag type='info'> Submit the information of this row.</el-tag></div>
+            <div style="margin: 0 0.3vw"><el-button type="warning" style='padding: -8px 0'>cancle</el-button> <i class="el-icon-right"></i><el-tag type='info'> Cancle the submit.</el-tag></div>
+            <div style="margin: 0 0.3vw"><el-button type="info" style='padding: -8px 0'>Edit in Dialog</el-button> <i class="el-icon-right"></i><el-tag type='info'> ALlow to modify the data by opening form dialog. </el-tag></div>
+          </div>
+          <div class="button-hints" style="display:flex; flex-direction: row; justify-content: flex-start;  margin: 10px 0;">
+            <div style="margin: 0 0.3vw"><el-button type="danger" disabled style='padding: -8px 0'>delete</el-button> <i class="el-icon-right"></i><el-tag type='info'> Delete the information of this row, not allowed here.</el-tag></div>
+            <div style="margin: 0 0.3vw"><el-button type="warning" style='padding: -8px 0'>restart</el-button> <i class="el-icon-right"></i><el-tag type='info'> if one wants more chances to play this game again..... </el-tag></div>
+          </div>
+        </el-collapse-item>
+      </el-collapse-item>
+      
+  </el-collapse>
+    <el-divider></el-divider>
+
     <div class="filter-container">
       <el-input v-model="listQuery.name" placeholder="Name" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
       <el-select v-model="listQuery.isFini" placeholder="isFini" clearable style="width: 90px" class="filter-item">
@@ -20,10 +45,6 @@
       <el-checkbox v-model="showReviewer" class="filter-item" style="margin-left:15px;" @change="tableKey=tableKey+1">
         show comments
       </el-checkbox>
-    </div>
-
-    <div class="note">
-      <p class="note-txt">You can only modify one row at a time, not multiple rows of data.</p>
     </div>
 
     <el-table
@@ -660,7 +681,7 @@ export default {
   font-weight: bold;
   color:rgb(226, 134, 13);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  font-size: 14px;
+  font-size: 0.6vw;
   margin: 0.2vw;
   display: flex;
   justify-content: flex-start;
