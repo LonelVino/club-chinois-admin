@@ -2,7 +2,7 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.name" placeholder="Name" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
-      
+
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
@@ -17,7 +17,13 @@
       </el-checkbox>
     </div>
 
+    <div class="note">
+      <p class="note-txt">When modifying the value of 'isAne', 'isVol', 'isPitch', 0 infers to 'No', 1 infers to 'Yes'!</p>
+      <p class="note-txt">You can only modify one row at a time, not multiple rows of data.</p>
+    </div>
+
     <el-table
+      ref="multipleTable"
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
@@ -28,66 +34,85 @@
       @sort-change="sortChange"
     >
       <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80">
-        <template slot-scope="{row}">
-          <span>{{ row.id }}</span>
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.id }}</div>
+          <div v-else>
+            <el-input v-model="scope.row.id" @click="handleClick(scope.row)"></el-input>
+          </div>
         </template>
       </el-table-column>
+      <!-- <el-table-column label="按钮">
+        <template slot-scope="scope">
+          <el-button @click="handleClick(scope.row)">{{ scope.row.isEdit ? '完成' : '编辑' }}</el-button>
+        </template>
+      </el-table-column> -->
       <el-table-column label="Name" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.name}}</span>
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.name }}</div>
+          <div v-else>
+            <el-input v-model="scope.row.name" @click="handleClick(scope.row)"></el-input>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="isAne" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.isAne?'Yes':'No' }}</span>
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.isAne?'Yes':'No' }}</div>
+          <div v-else>
+            <el-input v-model="scope.row.isAne" type='number' @click="handleClick(scope.row)"></el-input>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="isVol" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.isVol?'Yes':'No' }}</span>
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.isVol?'Yes':'No' }}</div>
+          <div v-else>
+            <el-input v-model="scope.row.isVol" type='number' @click="handleClick(scope.row)"></el-input>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="isPitch" class-name="status-col" width="100px">
-        <template slot-scope="{row}">
-          <span>{{ row.isPitch?'Yes':'No' }}</span>
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.isPitch?'Yes':'No' }}</div>
+          <div v-else>
+            <el-input v-model="scope.row.isPitch" type='number' @click="handleClick(scope.row)"></el-input>
+          </div>
         </template>
       </el-table-column>
-      
+
       <el-table-column label="Score" width="80px">
-        <template slot-scope="{row}">
-           <span>{{ row.score }}</span>
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.score}}</div>
+          <div v-else>
+            <el-input v-model="scope.row.score" type='number' @click="handleClick(scope.row)"></el-input>
+          </div>
         </template>
       </el-table-column>
 
       <el-table-column label="Country" width="100px" sortable="custom" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.pays }}</span>
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.pays}}</div>
+          <div v-else>
+            <el-input v-model="scope.row.pays" @click="handleClick(scope.row)"></el-input>
+          </div>
         </template>
       </el-table-column>
 
       <el-table-column label="Email" class-name="status-col" width="200">
-        <template slot-scope="{row}">
-          <span>{{ row.email }}</span>          
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.email}}</div>
+          <div v-else>
+            <el-input v-model="scope.row.email" @click="handleClick(scope.row)"></el-input>
+          </div>
         </template>
       </el-table-column>
 
-      <el-table-column label="telephone" class-name="status-col" width="200">
+      <el-table-column label="Actions" align="center" width="300" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <span>{{ row.telephone }}</span>          
-        </template>
-      </el-table-column>
-
-
-      <el-table-column label="Loc" class-name="status-col" width="100">
-        <template slot-scope="{row}">
-          <span>{{ row.loc }}</span>
-        </template>
-      </el-table-column>
-      
-      <el-table-column label="Actions" align="center" width="150" class-name="small-padding fixed-width">
-        <template slot-scope="{row}">
+          <el-button type="primary" size="mini" @click="handleSubmit(row)">
+            Submit
+          </el-button>
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            Edit
+            Edit in Dialog
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="confirmDelete(row.id)">
             Delete
@@ -124,12 +149,6 @@
         <el-form-item label="Email" prop="email" label-width="100px">
           <el-input v-model="temp.email" />
         </el-form-item>
-        <el-form-item label="Telephone" prop="telephone" label-width="130px">
-          <el-input v-model="temp.telephone" />
-        </el-form-item>
-        <el-form-item label="Location" prop="loc" label-width="100px">
-          <el-input v-model="temp.loc" />
-        </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">
@@ -148,7 +167,6 @@ import {getAllInfos, addInfo, updateInfo, deleteInfo} from '@/api/user'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
-
 
 export default {
   name: 'UserTable',
@@ -191,18 +209,21 @@ export default {
         isPitch: 0,
         score: 0,
         email: '',
-        telephone: '',
-        loc: '',
+        telephone: 'None',
+        loc: 'None',
         pays: 'None'
       },
 
+      // Edit in the table
+
+      // Edit dialog configuration
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
         update: 'Edit',
         create: 'Create'
       },
-      
+
       rules: {
         name: [{ required: true, message: 'name is required', trigger: 'blur' }],
         isAne: [{ required: true, message: 'If has played AneRouge is required', trigger: 'change' }],
@@ -218,6 +239,26 @@ export default {
     this.getList()
   },
   methods: {
+    // Implmement edit in the table
+    handleClick(row) {
+      // 动态设置数据并通过这个数据判断显示方式
+      if (row.isEdit) {
+        this.$delete(row, 'isEdit')
+      } else {
+        this.$confirm('Note! You can only modify one row at a time, not multiple rows of data!', 'Warning', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(()=>{
+          this.$set(row, 'isEdit', true);
+        })
+      }
+    },
+    handleSubmit(row) {
+      this.$delete(row, 'isEdit')
+      this.inlineUpdateData(row)
+    },
+
     getList() {
       this.listLoading = true
 
@@ -231,7 +272,7 @@ export default {
         }, 1.5 * 1000)
       })
     },
-    //TODO: Pagination 
+    //TODO: Pagination
     handleFilter() {
       this.listQuery.page = 1
       this.getList()
@@ -307,7 +348,6 @@ export default {
     handleUpdate(row) {
       console.log('dialogStatus:', this.dialogStatus)
       this.temp = Object.assign({}, row) // copy obj
-      this.temp.timestamp = new Date(this.temp.timestamp)
       this.dialogStatus = 'Update'
       this.dialogFormVisible = true
       this.$nextTick(() => {
@@ -318,11 +358,13 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
-          tempData.timestamp = +new Date(tempData.timestamp) // change Thu Nov 30 2017 16:41:05 GMT+0800 (CST) to 1512031311464
+          tempData.isAne = parseInt(tempData.isAne)
+          tempData.isVol = parseInt(tempData.isVol)
+          tempData.isPitch = parseInt(tempData.isPitch)
+          tempData.score = parseInt(tempData.score)
+          console.log(tempData)
           updateInfo(tempData).then(() => {
             this.confirmLoading = true
-            const index = this.list.findIndex(v => v.id === this.temp.id)
-            this.list.splice(index, 1, this.temp)
             this.dialogFormVisible = false
             this.confirmLoading = false
             this.$notify({
@@ -333,8 +375,41 @@ export default {
             })
           }).catch(err => {
             console.error(err)
+            this.$notify({
+              title: 'Failed to update',
+              message: 'Update Failed' + err,
+              type: 'warning',
+              duration: 2000
+            })
           })
         }
+      })
+    },
+    inlineUpdateData(row) {
+      const tempData = Object.assign({}, row)
+      tempData.isAne = parseInt(tempData.isAne)
+      tempData.isVol = parseInt(tempData.isVol)
+      tempData.isPitch = parseInt(tempData.isPitch)
+      tempData.score = parseInt(tempData.score)
+      console.log('TEMPDATA:', tempData)
+      updateInfo(tempData).then(() => {
+        this.confirmLoading = true
+        this.dialogFormVisible = false
+        this.confirmLoading = false
+        this.$notify({
+          title: 'Success',
+          message: 'Update Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(err => {
+        console.error(err)
+        this.$notify({
+          title: 'Failed to update',
+          message: 'Update Failed' + err,
+          type: 'warning',
+          duration: 2000
+        })
       })
     },
     confirmDelete(index) {
@@ -348,7 +423,7 @@ export default {
           this.$message({
             type: 'info',
             message: 'Delete cancled'
-          });          
+          });
         });
     },
     handleDelete(index) {
@@ -396,3 +471,21 @@ export default {
   }
 }
 </script>
+
+
+<style scoped>
+.note {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+.note-txt {
+  font-weight: bold;
+  color:rgb(226, 134, 13);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  margin: 0.2vw;
+  display: flex;
+  justify-content: flex-start;
+}
+</style>
