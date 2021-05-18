@@ -39,11 +39,8 @@
         </template>
       </el-table-column>
       <el-table-column label="Name" width="200px" align="center">
-        <template slot-scope="scope">
-          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.name }}</div>
-          <div v-else>
-            <el-input v-model="scope.row.name" @click="handleClick(scope.row)"></el-input>
-          </div>
+        <template slot-scope="{row}">
+          <span>{{ row.name }}</span>
         </template>
       </el-table-column>
       <el-table-column label="number" align="center" class-name="status-col" width="100">
@@ -90,7 +87,7 @@
           <el-button type="info" size="mini" @click="handleUpdate(row)">
             Edit in Dialog
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="confirmDelete(row.id)">
+          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="confirmDelete(row.id)" disabled>
             Delete
           </el-button>
         </template>
@@ -102,7 +99,7 @@
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
         <el-form-item label="Name" prop="name" required>
-          <el-input v-model="temp.name" />
+          <el-input v-model="temp.name" disabled/>
         </el-form-item>
         <el-form-item label="Number" prop="number" required>
           <el-input v-model="temp.number" />
