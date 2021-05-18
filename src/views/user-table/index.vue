@@ -48,26 +48,29 @@
       </el-table-column>
       <el-table-column label="isAne" width="100px" align="center">
         <template slot-scope="scope">
-          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.isAne?'Yes':'No' }}</div>
+          <span>{{scope.row.isAne?'Yes':'No'}}</span>
+          <!-- <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.isAne?'Yes':'No' }}</div>
           <div v-else>
             <el-input v-model="scope.row.isAne" type='number' @click="handleClick(scope.row)"></el-input>
-          </div>
+          </div> -->
         </template>
       </el-table-column>
       <el-table-column label="isVol" width="100px" align="center">
         <template slot-scope="scope">
-          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.isVol?'Yes':'No' }}</div>
+          <span>{{scope.row.isVol?'Yes':'No'}}</span> 
+          <!-- <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.isVol?'Yes':'No' }}</div>
           <div v-else>
             <el-input v-model="scope.row.isVol" type='number' @click="handleClick(scope.row)"></el-input>
-          </div>
+          </div> -->
         </template>
       </el-table-column>
       <el-table-column label="isPitch" class-name="status-col" width="100px">
         <template slot-scope="scope">
-          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.isPitch?'Yes':'No' }}</div>
+          <span>{{scope.row.isPitch?'Yes':'No'}}</span>
+          <!-- <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.isPitch?'Yes':'No' }}</div>
           <div v-else>
             <el-input v-model="scope.row.isPitch" type='number' @click="handleClick(scope.row)"></el-input>
-          </div>
+          </div> -->
         </template>
       </el-table-column>
 
@@ -124,16 +127,16 @@
           <el-input v-model="temp.name" />
         </el-form-item>
         <el-form-item label="Has played AneRouge?" prop="isAne" label-width="230px">
-          <el-radio v-model="temp.isAne" label="1">Yes</el-radio>
-          <el-radio v-model="temp.isAne" label="0">No</el-radio>
+          <el-radio v-model="temp.isAne" label="1" disabled>Yes</el-radio>
+          <el-radio v-model="temp.isAne" label="0" disabled>No</el-radio>
         </el-form-item>
         <el-form-item label="Has played Volant?" prop="isVol" label-width="230px">
-          <el-radio v-model="temp.isVol" label="1">Yes</el-radio>
-          <el-radio v-model="temp.isVol" label="0">No</el-radio>
+          <el-radio v-model="temp.isVol" label="1" disabled>Yes</el-radio>
+          <el-radio v-model="temp.isVol" label="0" disabled>No</el-radio>
         </el-form-item>
         <el-form-item label="Has played Pitch?" prop="isPitch" label-width="230px">
-          <el-radio v-model="temp.isPitch" label="1">Yes</el-radio>
-          <el-radio v-model="temp.isPitch" label="0">No</el-radio>
+          <el-radio v-model="temp.isPitch" label="1" disabled>Yes</el-radio>
+          <el-radio v-model="temp.isPitch" label="0" disabled>No</el-radio>
         </el-form-item>
         <el-form-item label="Score" prop="score" label-width="130px">
           <el-input v-model="temp.score" />
@@ -260,6 +263,11 @@ export default {
         // Just to simulate the time of the request
         console.log('response.data.infos:',response.data.infos)
         this.list = response.data.infos
+        for (var i = 0; i < this.list.length; i++) {
+          this.list[i].isAne = (this.list[i].isAne==true  || this.list[i].isAne == 1) ? 1 : 0  
+          this.list[i].isVol = (this.list[i].isVol==true  || this.list[i].isVol == 1) ? 1 : 0  
+          this.list[i].isPitch = (this.list[i].isPitch==true  || this.list[i].isPitch == 1) ? 1 : 0  
+        }
         this.tmp_list =  response.data.infos
         setTimeout(() => {
           this.listLoading = false
