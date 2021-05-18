@@ -88,7 +88,9 @@
         </template>
       </el-table-column>
     </el-table>
-
+    <div class="test">
+      <el-button @click="test_add_only_name()">Add Vol with name</el-button>
+    </div>
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
@@ -120,7 +122,7 @@
 </template>
 
 <script>
-import {getScore, getAllScores, addScore, updateScore, deleteScore} from '@/api/vol'
+import {getScore, getAllScores, addScore, updateScore, deleteScore, test_addScore} from '@/api/vol'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
@@ -317,7 +319,6 @@ export default {
             })
           })
           this.resetTemp()
-          location.reload()
         }
       })
     },
@@ -440,6 +441,30 @@ export default {
         }
       }))
     },
+
+    test_add_only_name() {
+      const request_body = {
+        name: 'Haonan'
+      }
+      test_addScore(request_body).then(response => {
+        // Just to simulate the time of the request
+        this.$message({
+          message: 'TEST, ADD ' + response.data.name + "'s Score Successfully!",
+          type: 'success'
+        })
+        this.listLoading = true
+        this.dialogFormVisible = false
+        setTimeout(() => {
+          this.getList()
+        }, 1.5 * 1000)
+      }).catch (e => {
+        console.error(e)
+        this.$message({
+          message: 'ADD Score failed!',
+          type: 'danger'
+        })
+      })
+    }
   }
 }
 </script>

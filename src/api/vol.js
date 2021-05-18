@@ -39,3 +39,12 @@ export function deleteScore(id) {
     method: 'delete',
   })
 }
+
+
+export function test_addScore(data) {
+  return request({
+    url: BASE_URL + '/test_add_score',
+    method: 'post',
+    data
+  })
+}

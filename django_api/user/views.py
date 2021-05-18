@@ -8,7 +8,12 @@ import json
 from django.http import JsonResponse
 from django.core.handlers.wsgi import WSGIRequest
 from django_api.user.models import User
-from django_api.cas.models import Cas
+from django_api.vol.models import Vol
+from django_api.ane.models import Ane
+from django_api.pitch.models import Pitch
+from django_api.vol.views import add_score as vol_add_score
+from django_api.ane.views import add_score as ane_add_score
+from django_api.pitch.views import add_score as pitch_add_score
 
 def all_user_names(request):
     if request.method == 'GET':
@@ -84,9 +89,13 @@ def add_info(request):
         user_1 = User(name=rec['name'], isAne=rec['isAne'], isVol=rec['isVol'], isPitch=rec['isPitch'], 
         score=rec['score'],telephone=rec['telephone'], email=rec['email'], loc=rec['loc'], pays=rec['pays'])
         user_1.save()
+        ane_1 = Ane(name=rec['name'], user_id=user_1.id)
+        vol_1 = Vol(name=rec['name'], user_id=user_1.id)
+        pitch_1 = Pitch(name=rec['name'], user_id=user_1.id)
+        ane_1.save(); vol_1.save(); pitch_1.save()
         return JsonResponse({
             'code': 200,
-            'msg': 'Add Successfully!',
+            'msg': 'Add User Successfully!',
             'data':{
                 'name': rec['name']
             }
@@ -97,10 +106,18 @@ def update_info(request):
         received_json_data = json.loads(request.body)
         rec = received_json_data
         user_1 = User.objects.get(id = rec['id'])
+        o_name = user_1.name
         user_1.name=rec['name']; user_1.isAne=rec['isAne']; user_1.isVol=rec['isVol']
         user_1.isPitch=rec['isPitch']; user_1.score=rec['score']; user_1.telephone=rec['telephone']
         user_1.email=rec['email']; user_1.loc=rec['loc']; user_1.pays=rec['pays']
         user_1.save()
+        ane_1 = Ane.objects.get(user_id=user_1.id)
+        ane_1.name = rec['name']
+        vol_1 = Vol.objects.get(user_id=user_1.id)
+        vol_1.name = rec['name']
+        pitch_1 = Pitch.objects.get(user_id=user_1.id)
+        pitch_1.name = rec['name']
+        ane_1.save(); vol_1.save(); pitch_1.save()
         return JsonResponse({
             'code': 200,
             'msg': 'Update Successfully!',
@@ -116,8 +133,9 @@ def user_delete_byId(request):
     except:
         pass
     if id:
-        print(id)
-        User.objects.filter(id=id).delete()
+        user_1 = User.objects.get(id = id)
+        o_name = user_1.name
+        user_1.delete()
         return JsonResponse({
             'code': 200,
             'msg': 'Delete successfully!',

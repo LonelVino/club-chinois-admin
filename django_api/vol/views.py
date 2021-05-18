@@ -114,3 +114,17 @@ def v_score_delete_byId(request):
             'code': 404,
             'msg': 'Delete failed!'
         })
+
+def test_add_score(request):
+    if request.method == 'POST':
+        received_json_data = json.loads(request.body)
+        rec = received_json_data
+        vol_1 = Vol(name=rec['name'])
+        vol_1.save()
+        return JsonResponse({
+            'code': 200,
+            'msg': 'Add Successfully!',
+            'data':{
+                'name': rec['name']
+            }
+        })
