@@ -324,7 +324,6 @@ export default {
         if (valid) {
           addInfo(this.temp).then(() => {
             this.confirmLoading = true
-            this.list.unshift(this.temp)
             this.dialogFormVisible = false
             this.confirmLoading = false
             this.$notify({
@@ -333,6 +332,7 @@ export default {
               type: 'success',
               duration: 2000
             })
+            this.getList()
           }).catch( err => {
             console.error(err)
           })
