@@ -16,8 +16,15 @@ class Pitch(models.Model):
     isPart = models.BooleanField(default=0)
     # if the user finished the game,  0 - unfinished, 1  otherwise
     isFini = models.BooleanField(default=0)
-    # if the user finished the game,  - unfinished,  otherwise
+    # if the user is freezed,  0 - unfreezed, 1  otherwise
+    isFreeze = models.BooleanField(default=0)
+    
     number = models.IntegerField(default=0)
+    number_2 = models.IntegerField(default=0)
+    number_3 = models.IntegerField(default=0)
+    number_4 = models.IntegerField(default=0)
+    number_5 = models.IntegerField(default=0)
+    number_6 = models.IntegerField(default=0)
     # The time used to finish the game, unfinished -> 0
     time = models.IntegerField(default=0)
     # The score of this user

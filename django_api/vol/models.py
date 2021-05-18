@@ -15,6 +15,8 @@ class Vol(models.Model):
     name = models.CharField(max_length=100)
     # if the user take part in the game,  0 - not, 1 otherwise
     isPart = models.BooleanField(default=0)
+    # if the user is freezed,  0 - unfreezed, 1  otherwise
+    isFreeze = models.BooleanField(default=0)
     # The number of users played with the volant
     number = models.IntegerField(default=0)
     # The time used to finish the game, unfinished -> 0

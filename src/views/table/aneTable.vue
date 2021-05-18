@@ -60,6 +60,19 @@
           />
         </template>
       </el-table-column>
+      <el-table-column label="hasInd" class-name="status-col" align="center" width="100">
+        <template slot-scope="scope">
+         <el-switch
+            v-model="scope.row.hasInd"
+            :active-value="1"
+            :inactive-value="0"
+            active-color="#02538C"
+            inactive-color="#B9B9B9"
+            @change="changeSwitch(scope.row)"
+            v-bind:disabled="!scope.row.isPart || scope.row.isFini"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="isFini" class-name="status-col" align="center" width="100">
         <template slot-scope="scope">
           <el-switch
@@ -68,14 +81,19 @@
             :inactive-value="0"
             active-color="#02538C"
             inactive-color="#B9B9B9"
-            @change="changeSwitch(scope.row)"
-            v-bind:disabled="scope.row.isFini || !scope.row.isPart"
+            @change="changeSwitchFini(scope.row)"
+            v-bind:disabled="scope.row.isFini || scope.row.status == 0 || scope.row.status == 2"
           />
+        </template>
+      </el-table-column>
+      <el-table-column label="Step" class-name="status-col" align="center" width="100">
+        <template slot-scope="scope">
+          <span>{{scope.row.step}}</span>
         </template>
       </el-table-column>
       <el-table-column label="Time" class-name="status-col" align="center" width="100">
         <template slot-scope="scope">
-          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.time}}</div>
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.time}} s</div>
           <div v-else>
             <el-input v-bind:disabled="scope.row.isFini" v-model="scope.row.time" type='number' @click="handleClick(scope.row)"></el-input>
           </div>
@@ -98,15 +116,28 @@
         </template>
       </el-table-column>
 
+     <el-table-column label="ANE-Actions" align="center" width="230" class-name="small-padding fixed-width">
+        <template slot-scope="{row}">
+          <el-button type="success" size="mini" @click="handleStart(row)" v-bind:disabled="row.isFini || row.isPart == 0 || row.status == 1 || row.status == 2">
+            Start
+          </el-button>
+          <el-button type="primary" size="mini" @click="handleNextStep(row)" v-bind:disabled="row.isFini || row.isPart == 0 || row.status == 2">
+            Next
+          </el-button>
+          <el-button type="danger" size="mini" @click="handleEnd(row)" v-bind:disabled="row.isFini || row.status == 0 || row.status == 2">
+            End
+          </el-button>
+        </template>
+     </el-table-column>
      <el-table-column label="Actions" align="center" width="420" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" @click="handleSubmit(row)" v-bind:disabled="row.isFini">
+          <el-button type="primary" size="mini" @click="handleSubmit(row)" v-bind:disabled="row.isFreeze">
             Submit
           </el-button>
-          <el-button type="warning" size="mini" @click="handleCancle(row)" v-bind:disabled="row.isFini">
+          <el-button type="warning" size="mini" @click="handleCancle(row)" v-bind:disabled="row.isFreeze">
             Cancle
           </el-button>
-          <el-button type="info" size="mini" @click="handleUpdate(row)" v-bind:disabled="row.isFini">
+          <el-button type="info" size="mini" @click="handleUpdate(row)" v-bind:disabled="row.isFreeze">
             Edit in Dialog
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" disabled @click="confirmDelete(row.id)">
@@ -128,11 +159,17 @@
         <el-form-item label="Have Participated?">
           <el-switch v-model="temp.isPart"></el-switch>
         </el-form-item>
+        <el-form-item label="Has Indice?">
+          <el-switch v-model="temp.hasInd"></el-switch>
+        </el-form-item>
         <el-form-item label="Have Fininshed?">
           <el-switch v-model="temp.isFini"></el-switch>
         </el-form-item>
         <el-form-item label="Time" prop="time"  required>
           <el-input  type="number" v-model="temp.time" />
+        </el-form-item>
+        <el-form-item label="Step" required>
+          <el-input  type="number" v-model="temp.step" />
         </el-form-item>
         <el-form-item label="Score" prop="a_score" required>
           <el-input  type="number" v-model="temp.a_score" />
@@ -193,14 +230,20 @@ export default {
       },
 
       isFiniOptions: ['true', 'false'],
-      showReviewer: true,
+      showReviewer: false,
       temp: {
         id: undefined,
         name: 'None',
         isPart: 0,
+        hasInd: 0,
         isFini: 0,
+        isFreeze: 0,
         a_score: 0,
         time: 0,
+        start_time: undefined,
+        end_time: undefined,
+        status: 0,  // 0: default, 1: start, 2:end
+        step: 0,
         comment: '',
       },
 
@@ -255,7 +298,9 @@ export default {
         this.list = response.data.infos
         for (var i = 0; i < this.list.length; i++) {
           this.list[i].isPart = (this.list[i].isPart==true  || this.list[i].isPart == 1) ? 1 : 0  
+          this.list[i].hasInd = (this.list[i].hasInd==true  || this.list[i].hasInd == 1) ? 1 : 0  
           this.list[i].isFini = (this.list[i].isFini==true  || this.list[i].isFini == 1) ? 1 : 0  
+          this.list[i].isFreeze = (this.list[i].isFreeze==true  || this.list[i].isFreeze == 1) ? 1 : 0  
         }
         
         this.tmp_list = this.list
@@ -307,13 +352,6 @@ export default {
     ResetFilter() {
       this.getList()
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作Success',
-        type: 'success'
-      })
-      row.status = status
-    },
     compare(p) {
       return function(m,n){
         var a = m[p];
@@ -328,16 +366,51 @@ export default {
       console.log(this.list)
     },
 
+    // GAME PART -- START STOP END
+    handleStart(row) {
+      row.status = 1
+      row.start_time = new Date()
+      this.$notify({
+        title: 'Timer Starts',
+        message: 'Timer starts succcessully!! You can end timer then.',
+        type: 'info',
+        duration: 2000
+      })
+    },
+    handleNextStep(row) {
+      row.step += 1
+      if (row.step == 6) {
+        this.handleEnd(row)
+      }
+    },
+    handleEnd(row) {
+      row.status = 2
+      row.isFini = 1
+      row.end_time = new Date()
+      row.time = (row.end_time - row.start_time)/1000
+      this.$notify({
+        title: 'Timer ends',
+        message: 'Timer ends succcessully!! The The duration is ' + row.time +' seconds. You could submit the data now.',
+        type: 'success',
+        duration: 5000
+      })
+    },
+
     resetTemp() {
       this.temp = {
         id: undefined,
         name: 'None',
         isPart: 0,
+        hasInd: 0,
         isFini: 0,
+        isFreeze: 0,
         a_score: 0,
         time: 0,
+        start_time: new Date(),
+        end_time: new Date(),
+        status: 0,  // 0: default, 1: start, 2:end
+        step: 0,
         comment: '',
-        pays: 'None'
       }
     },
     handleCreate() {
@@ -388,6 +461,20 @@ export default {
       })
     },
     updateData() {
+      this.$confirm('Are you sure to submit? Once you submitted, the operation cannot be undone!', 'Note', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          this.confirmUpdate()
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Update cancled'
+          });          
+        });
+    },
+    confirmUpdate() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           console.log('this.temp.isPart, this.temp.isFini: ', this.temp.isPart, this.temp.isFini)
@@ -396,6 +483,7 @@ export default {
           tempData.isFini = (tempData.isFini == true || tempData.isFini == 1) ? 1 : 0 
           tempData.time = parseInt(tempData.time)
           tempData.a_score = parseInt(tempData.a_score)
+          tempData.isFreeze = 1 
           updateScore(tempData).then(response => {
             this.$message({
               message: 'UPDATE ' + response.data.name + "'s Score Successfully!",
@@ -418,33 +506,46 @@ export default {
       })
     },
     inlineUpdateData(row) {
-      console.log('this.temp.isPart, this.temp.isFini: ', this.temp.isPart, this.temp.isFini)
-      const tempData = Object.assign({}, row)
-      tempData.isFini = parseInt(tempData.isFini)
-      tempData.isFini = (tempData.isFini == true || tempData.isFini == 1) ? 1 : 0 
-      tempData.time = parseInt(tempData.time)
-      tempData.a_score = parseInt(tempData.a_score)
-      console.log('TEMPDATA:', tempData)
-      updateScore(tempData).then(() => {
-        this.confirmLoading = true
-        this.dialogFormVisible = false
-        this.confirmLoading = false
-        this.$notify({
-          title: 'Success',
-          message: 'Update Successfully',
-          type: 'success',
-          duration: 2000
-        })
-        this.getList()
-      }).catch(err => {
-        console.error(err)
-        this.$notify({
-          title: 'Failed to update',
-          message: 'Update Failed' + err,
-          type: 'warning',
-          duration: 2000
-        })
-      })
+      this.$confirm('Are you sure to submit? Once you submitted, the operation cannot be undone! (If you want to modify the data, you have to restart the game!)', 'Note', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          console.log('this.temp.isPart, this.temp.isFini: ', this.temp.isPart, this.temp.isFini)
+          const tempData = Object.assign({}, row)
+          tempData.isFini = parseInt(tempData.isFini)
+          tempData.isFini = (tempData.isFini == true || tempData.isFini == 1) ? 1 : 0 
+          tempData.time = parseInt(tempData.time)
+          tempData.a_score = parseInt(tempData.a_score)
+          tempData.isFreeze = 1 
+          console.log('TEMPDATA:', tempData)
+          updateScore(tempData).then(() => {
+            this.confirmLoading = true
+            this.dialogFormVisible = false
+            this.confirmLoading = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          }).catch(err => {
+            console.error(err)
+            this.$notify({
+              title: 'Failed to update',
+              message: 'Update Failed' + err,
+              type: 'warning',
+              duration: 2000
+            })
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Update cancled'
+          });          
+        });
+      
     },
     confirmDelete(index) {
       this.$confirm('This operation will delete this information forever, are you sure?', 'Note', {
@@ -500,35 +601,54 @@ export default {
         }
       }))
     },
-    changeSwitch(row) {
-
+    changeSwitchFini(row) {
+      if (row.isFini == 1) {
+        row.status = 2
+        row.end_time = new Date()
+        row.time = (row.end_time - row.start_time)/1000
+        this.$notify({
+          title: 'Timer ends',
+          message: 'Timer ends succcessully!! The The duration is ' + row.time +' seconds. You could submit the data now.',
+          type: 'success',
+          duration: 5000
+        })
+      }
     },
     handleRestart (row) {
-      const tempData = Object.assign({}, row)
-      tempData.isFini = 0
-      tempData.isPart = 0
-      tempData.time = parseInt(tempData.time)
-      tempData.a_score = parseInt(tempData.a_score)
-      updateScore(tempData).then(() => {
-        this.confirmLoading = true
-        this.dialogFormVisible = false
-        this.confirmLoading = false
-        this.$notify({
-          title: 'Success Restart',
-          message: 'Restart Successfully',
-          type: 'success',
-          duration: 2000
+      this.$confirm('Are you sure to restart? Once you restart, the data will be cleaned up!', 'Note', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          this.resetTemp()
+          const tempData = Object.assign({}, row)
+          tempData.isFini = 0
+          tempData.hasInd = 0      
+          tempData.isPart = 0
+          tempData.isFreeze = 0
+          tempData.time = parseInt(tempData.time)
+          tempData.a_score = parseInt(tempData.a_score)
+          updateScore(tempData).then(() => {
+            this.confirmLoading = true
+            this.dialogFormVisible = false
+            this.confirmLoading = false
+            this.$notify({
+              title: 'Success Restart',
+              message: 'Restart Successfully',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          }).catch(err => {
+            console.error(err)
+            this.$notify({
+              title: 'Failed to Restart',
+              message: 'Restart Failed' + err,
+              type: 'warning',
+              duration: 2000
+            })
+          })
         })
-        this.getList()
-      }).catch(err => {
-        console.error(err)
-        this.$notify({
-          title: 'Failed to Restart',
-          message: 'Restart Failed' + err,
-          type: 'warning',
-          duration: 2000
-        })
-      })
     }
   }
 }

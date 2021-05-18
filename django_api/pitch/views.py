@@ -19,7 +19,13 @@ def all_scores(request):
             tmp['name'] = i.name
             tmp['isPart'] = i.isPart
             tmp['isFini'] = i.isFini
+            tmp['isFreeze'] = i.isFreeze
             tmp['number'] = i.number
+            tmp['number_2'] = i.number_2
+            tmp['number_3'] = i.number_3
+            tmp['number_4'] = i.number_4
+            tmp['number_5'] = i.number_5
+            tmp['number_6'] = i.number_6
             tmp['time'] = i.time
             tmp['p_score'] = i.p_score
             tmp['comment'] = i.comment
@@ -51,7 +57,8 @@ def one_score(request):
         })     
 
         info = {'id': pitch_1.id, 'name': pitch_1.name, 'isFini': pitch_1.isFini, 
-        'isPart': pitch_1.isPart, 'number': pitch_1.number, 
+        'isPart': pitch_1.isPart,  'isFreeze': pitch_1.isFreeze, 'number': pitch_1.number, 'number_2': pitch_1.number_2, 
+        'number_3': pitch_1.number_3, 'number_4': pitch_1.number_4, 'number_5': pitch_1.number_5, 'number_6': pitch_1.number_6, 
         'p_score': pitch_1.p_score, 'time': pitch_1.time, 'comment': pitch_1.comment}
         return JsonResponse({
             'code': 200,
@@ -66,8 +73,10 @@ def add_score(request):
     if request.method == 'POST':
         received_json_data = json.loads(request.body)
         rec = received_json_data
-        pitch_1 = Pitch(name=rec['name'], isPart=rec['isPart'], isFini=rec['isFini'],
-        number=rec['number'], time=rec['time'], p_score=rec['p_score'], comment=rec['comment'])
+        pitch_1 = Pitch(name=rec['name'], isPart=rec['isPart'], isFini=rec['isFini'], isFreeze=rec['isFreeze'],
+        number=rec['number'], number_2 = rec['number_2'], number_3 = rec['number_3'] 
+        ,number_4 = rec['number_4'], number_5 = rec['number_5'], number_6 = rec['number_6'],
+        time=rec['time'], p_score=rec['p_score'], comment=rec['comment'])
         pitch_1.save()
         return JsonResponse({
             'code': 200,
@@ -86,7 +95,14 @@ def update_score(request):
         pitch_1.name=rec['name']
         pitch_1.isPart=rec['isPart']
         pitch_1.isFini=rec['isFini']
+        pitch_1.isFreeze=rec['isFreeze']
+
         pitch_1.number=rec['number']
+        pitch_1.number_2 = rec['number_2'] 
+        pitch_1.number_3 = rec['number_3'] 
+        pitch_1.number_4 = rec['number_4'] 
+        pitch_1.number_5 = rec['number_5']
+        pitch_1.number_6 = rec['number_6']
         pitch_1.time=rec['time']
         pitch_1.p_score=rec['p_score']
         pitch_1.comment=rec['comment']

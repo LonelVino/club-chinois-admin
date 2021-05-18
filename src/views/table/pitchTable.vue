@@ -72,11 +72,51 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="number" align="center" class-name="status-col" width="100">
+      <el-table-column label="1-st Range Out" align="center" class-name="status-col" width="130">
         <template slot-scope="scope">
           <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.number }}</div>
           <div v-else>
             <el-input v-bind:disabled="scope.row.isFini" v-model="scope.row.number"  type='number'  @click="handleClick(scope.row)"></el-input>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="1-st Range" align="center" class-name="status-col" width="100">
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.number_2 }}</div>
+          <div v-else>
+            <el-input v-bind:disabled="scope.row.isFini" v-model="scope.row.number_2"  type='number'  @click="handleClick(scope.row)"></el-input>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="2-nd Range Out" align="center" class-name="status-col" width="130">
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.number_3 }}</div>
+          <div v-else>
+            <el-input v-bind:disabled="scope.row.isFini" v-model="scope.row.number_3"  type='number'  @click="handleClick(scope.row)"></el-input>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="2-nd Range" align="center" class-name="status-col" width="100">
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.number_4 }}</div>
+          <div v-else>
+            <el-input v-bind:disabled="scope.row.isFini" v-model="scope.row.number_4"  type='number'  @click="handleClick(scope.row)"></el-input>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="3-rd Range Out" align="center" class-name="status-col" width="130">
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.number_5 }}</div>
+          <div v-else>
+            <el-input v-bind:disabled="scope.row.isFini" v-model="scope.row.number_5"  type='number'  @click="handleClick(scope.row)"></el-input>
+          </div>
+        </template>
+      </el-table-column>
+      <el-table-column label="3-rd Range" align="center" class-name="status-col" width="100">
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.number_6 }}</div>
+          <div v-else>
+            <el-input v-bind:disabled="scope.row.isFini" v-model="scope.row.number_6"  type='number'  @click="handleClick(scope.row)"></el-input>
           </div>
         </template>
       </el-table-column>
@@ -99,13 +139,13 @@
 
       <el-table-column label="Actions" align="center" width="420" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" @click="handleSubmit(row)" v-bind:disabled="row.isFini">
+          <el-button type="primary" size="mini" @click="handleSubmit(row)" v-bind:disabled="row.isFreeze">
             Submit
           </el-button>
-          <el-button type="warning" size="mini" @click="handleCancle(row)" v-bind:disabled="row.isFini">
+          <el-button type="warning" size="mini" @click="handleCancle(row)" v-bind:disabled="row.isFreeze">
             Cancle
           </el-button>
-          <el-button type="info" size="mini" @click="handleUpdate(row)" v-bind:disabled="row.isFini">
+          <el-button type="info" size="mini" @click="handleUpdate(row)" v-bind:disabled="row.isFreeze">
             Edit in Dialog
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="confirmDelete(row.id)" disabled>
@@ -131,8 +171,23 @@
         <el-form-item label="Have Fininshed?">
           <el-switch v-model="temp.isFini"></el-switch>
         </el-form-item>
-        <el-form-item label="Number" prop="number" required>
+        <el-form-item label="1-st Range Out" prop="number" required>
           <el-input v-model="temp.number" />
+        </el-form-item>
+        <el-form-item label="1-st Range" prop="number" required>
+          <el-input v-model="temp.number_2" />
+        </el-form-item>
+        <el-form-item label="2-nd Range Out" prop="number" required>
+          <el-input v-model="temp.number_3" />
+        </el-form-item>
+        <el-form-item label="2-nd Range" prop="number" required>
+          <el-input v-model="temp.number_4" />
+        </el-form-item>
+        <el-form-item label="3-rd Range Out" prop="number" required>
+          <el-input v-model="temp.number_5" />
+        </el-form-item>
+        <el-form-item label="3-rd Range" prop="number" required>
+          <el-input v-model="temp.number_6" />
         </el-form-item>
         <el-form-item label="Score" prop="p_score" required>
           <el-input  type="number" v-model="temp.p_score" />
@@ -197,7 +252,13 @@ export default {
         name: 'None',
         isPart: 0,
         isFini: 0,
+        isFreeze: 0,
         number: 0,
+        number_2: 0,
+        number_3: 0,
+        number_4: 0,
+        number_5: 0,
+        number_6: 0,
         p_score: 0,
         time: 0,
         comment: ''
@@ -256,6 +317,7 @@ export default {
         for (var i = 0; i < this.list.length; i++) {
           this.list[i].isPart = (this.list[i].isPart==true  || this.list[i].isPart == 1) ? 1 : 0  
           this.list[i].isFini = (this.list[i].isFini==true  || this.list[i].isFini == 1) ? 1 : 0  
+          this.list[i].isFreeze = (this.list[i].isFreeze==true  || this.list[i].isFreeze == 1) ? 1 : 0  
         }
         this.tmp_list = this.list
         setTimeout(() => {
@@ -333,7 +395,13 @@ export default {
         name: 'None',
         sPart: 0,
         isFini: 0,
+        isFreeze: 0,
         number: 0,
+        number_2: 0,
+        number_3: 0,
+        number_4: 0,
+        number_5: 0,
+        number_6: 0,
         p_score: 0,
         time: 0,
         comment: ''
@@ -387,14 +455,31 @@ export default {
       })
     },
     updateData() {
+      this.$confirm('Are you sure to submit? Once you submitted, the operation cannot be undone!', 'Note', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          this.confirmUpdate()
+        }).catch(() => {
+          this.$message({
+            type: 'warning',
+            message: 'Update cancled'
+          });          
+        });
+    },
+    confirmUpdate() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           this.temp.isPart = (this.temp.isPart == true  || tempData.isFini == 1) ? 1 : 0 
           this.temp.isFini = (this.temp.isFini == true  || tempData.isFini == 1) ? 1 : 0 
-          tempData.number = parseInt(tempData.number)
+          tempData.number = parseInt(tempData.number); tempData.number_2 = parseInt(tempData.number_2);
+          tempData.number_3 = parseInt(tempData.number_3); tempData.number_4 = parseInt(tempData.number_4);
+          tempData.number_5 = parseInt(tempData.number_5); tempData.number_6 = parseInt(tempData.number_6);
           tempData.time = parseInt(tempData.time)
           tempData.p_score = parseInt(tempData.p_score)
+          tempData.isFreeze = 1
           updateScore(tempData).then(response => {
             this.$message({
               message: 'UPDATE ' + response.data.name + "'s Score Successfully!",
@@ -418,33 +503,47 @@ export default {
       })
     },
     inlineUpdateData(row) {
-      const tempData = Object.assign({}, row)
-      tempData.isFini = parseInt(tempData.isFini)
-      tempData.isFini = (tempData.isFini == true || tempData.isFini == 1) ? 1 : 0 
-      tempData.number = parseInt(tempData.number)
-      tempData.time = parseInt(tempData.time)
-      tempData.p_score = parseInt(tempData.p_score)
-      console.log('TEMPDATA:', tempData)
-      updateScore(tempData).then(() => {
-        this.confirmLoading = true
-        this.dialogFormVisible = false
-        this.confirmLoading = false
-        this.$notify({
-          title: 'Success',
-          message: 'Update Successfully',
-          type: 'success',
-          duration: 2000
+      this.$confirm('Are you sure to submit? Once you submitted, the operation cannot be undone! (If you want to modify the data, you have to restart the game!)', 'Note', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          const tempData = Object.assign({}, row)
+          tempData.isFini = parseInt(tempData.isFini)
+          tempData.isFini = (tempData.isFini == true || tempData.isFini == 1) ? 1 : 0 
+          tempData.number = parseInt(tempData.number); tempData.number_2 = parseInt(tempData.number_2);
+          tempData.number_3 = parseInt(tempData.number_3); tempData.number_4 = parseInt(tempData.number_4);
+          tempData.number_5 = parseInt(tempData.number_5); tempData.number_6 = parseInt(tempData.number_6);
+          tempData.time = parseInt(tempData.time)
+          tempData.p_score = parseInt(tempData.p_score)
+          tempData.isFreeze = 1
+          console.log('TEMPDATA:', tempData)
+          updateScore(tempData).then(() => {
+            this.confirmLoading = true
+            this.dialogFormVisible = false
+            this.confirmLoading = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          }).catch(err => {
+            console.error(err)
+            this.$notify({
+              title: 'Failed to update',
+              message: 'Update Failed' + err,
+              type: 'warning',
+              duration: 2000
+            })
+          }).catch(() => {
+          this.$message({
+            type: 'warning',
+            message: 'Update cancled'
+          });          
+        });
         })
-        this.getList()
-      }).catch(err => {
-        console.error(err)
-        this.$notify({
-          title: 'Failed to update',
-          message: 'Update Failed' + err,
-          type: 'warning',
-          duration: 2000
-        })
-      })
     },
     confirmDelete(index) {
       this.$confirm('This operation will delete this information forever, are you sure?', 'Note', {
@@ -481,8 +580,10 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['ID', 'name', 'number', 'Time', 'Score', 'Comments']
-        const filterVal = ['id', 'name', 'number', 'time', 'p_score', 'comment']
+        const tHeader = ['ID', 'name', '1-st Range Out', '1-st Range','2-nd Range Out','2-nd Range',
+        '3-rd Range Out','3-rd Range','Time', 'Score', 'Comments']
+        const filterVal = ['id', 'name', 'number', 'number_2', 'number_3', 'number_4', 'number_5',
+        'number_6', 'time', 'p_score', 'comment']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
@@ -505,31 +606,42 @@ export default {
 
     },
     handleRestart (row) {
-      const tempData = Object.assign({}, row)
-      tempData.isFini = 0
-      tempData.isPart = 0
-      tempData.time = parseInt(tempData.time)
-      tempData.a_score = parseInt(tempData.a_score)
-      updateScore(tempData).then(() => {
-        this.confirmLoading = true
-        this.dialogFormVisible = false
-        this.confirmLoading = false
-        this.$notify({
-          title: 'Success Restart',
-          message: 'Restart Successfully',
-          type: 'success',
-          duration: 2000
+      this.$confirm('Are you sure to restart? Once you restart, the data will be cleaned up!', 'Note', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          const tempData = Object.assign({}, row)
+          tempData.isFini = 0
+          tempData.isPart = 0
+          tempData.time = parseInt(tempData.time)
+          tempData.a_score = parseInt(tempData.a_score)
+          updateScore(tempData).then(() => {
+            this.confirmLoading = true
+            this.dialogFormVisible = false
+            this.confirmLoading = false
+            this.$notify({
+              title: 'Success Restart',
+              message: 'Restart Successfully',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          }).catch(err => {
+            console.error(err)
+            this.$notify({
+              title: 'Failed to Restart',
+              message: 'Restart Failed' + err,
+              type: 'warning',
+              duration: 2000
+            })
+          })
+        }).catch(()=> {
+          this.$message({
+            type: 'warning',
+            message: 'Restart cancled '
+          });   
         })
-        this.getList()
-      }).catch(err => {
-        console.error(err)
-        this.$notify({
-          title: 'Failed to Restart',
-          message: 'Restart Failed' + err,
-          type: 'warning',
-          duration: 2000
-        })
-      })
     }
 
   }

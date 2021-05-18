@@ -17,8 +17,14 @@ def all_scores(request):
             tmp['id'] = i.id
             tmp['name'] = i.name
             tmp['isPart'] = i.isPart
+            tmp['hasInd'] = i.hasInd
             tmp['isFini'] = i.isFini
+            tmp['isFreeze'] = i.isFreeze
             tmp['time'] = i.time
+            tmp['start_time'] = i.start_time
+            tmp['end_time'] = i.end_time
+            tmp['step'] = i.step
+            tmp['status'] = i.status
             tmp['a_score'] = i.a_score
             tmp['comment'] = i.comment
             scores.append(tmp)
@@ -43,14 +49,14 @@ def one_score(request):
         elif name != '':
             ane_1 = Ane.objects.filter(name=name)[0]
         else:
-           return JsonResponse({
+            return JsonResponse({
             'code': 3005,
             'msg': 'Parameters does not meet the requirements!'
         })     
 
-        info = {'id': ane_1.id, 'name': ane_1.name, 
-        'isPart': ane_1.isPart, 'isFini': ane_1.isFini, 
-        'a_score': ane_1.a_score, 'time': ane_1.time, 'comment': ane_1.comment}
+        info = {'id': ane_1.id, 'name': ane_1.name, 'start_time': ane_1.start_time, 'end_time': ane_1.end_time,
+        'isPart': ane_1.isPart, 'hasInd': ane_1.hasInd,'isFini': ane_1.isFini, 'isFreeze': ane_1.isFreeze, 'status': ane_1.status,
+        'a_score': ane_1.a_score, 'time': ane_1.time,'step': ane_1.step, 'comment': ane_1.comment}
         return JsonResponse({
             'code': 200,
             'msg': 'Get information successfully',
@@ -63,8 +69,9 @@ def add_score(request):
     if request.method == 'POST':
         received_json_data = json.loads(request.body)
         rec = received_json_data
-        ane_1 = Ane(name=rec['name'], isPart=rec['isPart'],  
-        isFini=rec['isFini'], time=rec['time'], a_score=rec['a_score'], comment=rec['comment'])
+        ane_1 = Ane(name=rec['name'], isPart=rec['isPart'],  hasInd=rec['hasInd'], start_time=rec['start_time'], end_time=rec['end_time'],
+        isFini=rec['isFini'], isFreeze=rec['isFreeze'], time=rec['time'], status=rec['status'],
+        step=rec['step'], a_score=rec['a_score'], comment=rec['comment'])
         ane_1.save()
         return JsonResponse({
             'code': 200,
@@ -81,8 +88,14 @@ def update_score(request):
         ane_1 = Ane.objects.get(id = rec['id'])
         ane_1.name=rec['name']
         ane_1.isPart=rec['isPart']
+        ane_1.hasInd=rec['hasInd']
         ane_1.isFini=rec['isFini']
+        ane_1.isFreeze=rec['isFreeze']
         ane_1.time=rec['time']
+        ane_1.start_time = rec['start_time']
+        ane_1.end_time = rec['end_time']
+        ane_1.step=rec['step']
+        ane_1.status = rec['status']
         ane_1.a_score=rec['a_score']
         ane_1.comment=rec['comment']
         ane_1.save()

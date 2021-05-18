@@ -6,6 +6,9 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
+      <el-button v-waves class="filter-item" type="primary" icon="el-icon-refresh-right" @click="ResetFilter">
+        Reset
+      </el-button>
       <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
         Add
       </el-button>
@@ -74,7 +77,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Score" width="80px">
+      <el-table-column label="Score" width="80px" sortable="custom"  align="center">
         <template slot-scope="scope">
           <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.score}}</div>
           <div v-else>
@@ -255,7 +258,9 @@ export default {
     handleCancle(row) {
       this.getList()
     },
-
+    ResetFilter() {
+      this.getList()
+    },
     getList() {
       this.listLoading = true
 
@@ -276,19 +281,30 @@ export default {
     },
     //TODO: Pagination
     handleFilter() {
-      this.listQuery.page = 1
-      this.getList()
+      var new_array = []
+      this.list = this.tmp_list
+      console.log(this.listQuery, this.list)
+      if (this.listQuery.name != undefined && this.listQuery.name != "" ) {
+        for (var i = 0; i < this.list.length; i++) {
+          if (this.list[i].name == this.listQuery.name) {
+            new_array.push(this.list[i])
+          }
+        }
+        this.list = new_array
+        console.log('FILTER ACCORDING TO THE NAME.....')
+      } else  {
+        this.getList()
+        this.$message({
+          type:'info',
+          message: 'NO FILTER'
+        })
+      }
+      console.log('AFTER FILTERING, THE LIST IS: ', this.list)
     },
     ResetFilter() {
       this.getList()
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作Success',
-        type: 'success'
-      })
-      row.status = status
-    },
+
     compare(p) {
       return function(m,n){
         var a = m[p];
@@ -456,7 +472,7 @@ export default {
         excel.export_json_to_excel({
           header: tHeader,
           data,
-          filename: 'table-list'
+          filename: 'Users table'
         })
         this.downloadLoading = false
       })

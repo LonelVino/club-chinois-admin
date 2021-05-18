@@ -83,13 +83,13 @@
 
       <el-table-column label="Actions" align="center" width="420" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" @click="handleSubmit(row)">
+          <el-button type="primary" size="mini" @click="handleSubmit(row)" v-bind:disabled="row.isFreeze">
             Submit
           </el-button>
-          <el-button type="warning" size="mini" @click="handleCancle(row)">
+          <el-button type="warning" size="mini" @click="handleCancle(row)" v-bind:disabled="row.isFreeze">
             Cancle
           </el-button>
-          <el-button type="info" size="mini" @click="handleUpdate(row)">
+          <el-button type="info" size="mini" @click="handleUpdate(row)" v-bind:disabled="row.isFreeze">
             Edit in Dialog
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="confirmDelete(row.id)" disabled>
@@ -182,6 +182,7 @@ export default {
         id: undefined,
         name: 'None',
         isPart: 0,
+        isFreeze: 0,
         number: 0,
         v_score: 0,
         time: 0,
@@ -239,6 +240,7 @@ export default {
         this.list = response.data.infos
         for (var i = 0; i < this.list.length; i++) {
           this.list[i].isPart = (this.list[i].isPart==true  || this.list[i].isPart == 1) ? 1 : 0  
+          this.list[i].isFreeze = (this.list[i].isFreeze==true  || this.list[i].isFreeze == 1) ? 1 : 0  
         }
         this.tmp_list = this.list
         setTimeout(() => {
@@ -271,13 +273,6 @@ export default {
     ResetFilter() {
       this.getList()
     },
-    handleModifyStatus(row, status) {
-      this.$message({
-        message: '操作Success',
-        type: 'success'
-      })
-      row.status = status
-    },
     compare(p) {
       return function(m,n){
         var a = m[p];
@@ -299,6 +294,7 @@ export default {
         name: 'None',
         number: 0,
         isPart: 0,
+        isFreeze: 0,
         v_score: 0,
         time: 0,
         comment: ''
@@ -350,6 +346,20 @@ export default {
       })
     },
     updateData() {
+      this.$confirm('Are you sure to submit? Once you submitted, the operation cannot be undone!', 'Note', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          this.confirmUpdate()
+        }).catch(() => {
+          this.$message({
+            type: 'warning',
+            message: 'Update cancled'
+          });          
+        });
+    },
+    confirmUpdate() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
@@ -357,6 +367,7 @@ export default {
           tempData.number = parseInt(tempData.number)
           tempData.time = parseInt(tempData.time)
           tempData.v_score = parseInt(tempData.v_score)
+          tempData.isFreeze = 1 
           updateScore(tempData).then(response => {
             this.$message({
               message: 'UPDATE ' + response.data.name + "'s Score Successfully!",
@@ -376,35 +387,46 @@ export default {
           })
         }
         this.resetTemp()
-        
       })
     },
     inlineUpdateData(row) {
-      const tempData = Object.assign({}, row)
-      tempData.number = parseInt(tempData.number)
-      tempData.time = parseInt(tempData.time)
-      tempData.v_score = parseInt(tempData.v_score)
-      console.log('TEMPDATA:', tempData)
-      updateScore(tempData).then(() => {
-        this.confirmLoading = true
-        this.dialogFormVisible = false
-        this.confirmLoading = false
-        this.$notify({
-          title: 'Success',
-          message: 'Update Successfully',
-          type: 'success',
-          duration: 2000
-        })
-        this.getList()      
-      }).catch(err => {
-        console.error(err)
-        this.$notify({
-          title: 'Failed to update',
-          message: 'Update Failed' + err,
-          type: 'warning',
-          duration: 2000
-        })
-      })
+      this.$confirm('Are you sure to submit? Once you submitted, the operation cannot be undone! (If you want to modify the data, you have to restart the game!)', 'Note', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          const tempData = Object.assign({}, row)
+          tempData.number = parseInt(tempData.number)
+          tempData.time = parseInt(tempData.time)
+          tempData.v_score = parseInt(tempData.v_score)
+          tempData.isFreeze = 1 
+          console.log('TEMPDATA:', tempData)
+          updateScore(tempData).then(() => {
+            this.confirmLoading = true
+            this.dialogFormVisible = false
+            this.confirmLoading = false
+            this.$notify({
+              title: 'Success',
+              message: 'Update Successfully',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()      
+          }).catch(err => {
+            console.error(err)
+            this.$notify({
+              title: 'Failed to update',
+              message: 'Update Failed' + err,
+              type: 'warning',
+              duration: 2000
+            })
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'warning',
+            message: 'Update cancled'
+          });          
+        });
     },
     confirmDelete(index) {
       this.$confirm('This operation will delete this information forever, are you sure?', 'Note', {
@@ -467,30 +489,43 @@ export default {
 
     },
     handleRestart (row) {
-      const tempData = Object.assign({}, row)
-      tempData.isPart = 0
-      tempData.time = parseInt(tempData.time)
-      tempData.a_score = parseInt(tempData.a_score)
-      updateScore(tempData).then(() => {
-        this.confirmLoading = true
-        this.dialogFormVisible = false
-        this.confirmLoading = false
-        this.$notify({
-          title: 'Success Restart',
-          message: 'Restart Successfully',
-          type: 'success',
-          duration: 2000
+      this.$confirm('Are you sure to restart? Once you restart, the data will be cleaned up!', 'Note', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          this.resetTemp()
+          const tempData = Object.assign({}, row)
+          tempData.isPart = 0
+          tempData.isFreeze = 0
+          tempData.time = parseInt(tempData.time)
+          tempData.a_score = parseInt(tempData.a_score)
+          updateScore(tempData).then(() => {
+            this.confirmLoading = true
+            this.dialogFormVisible = false
+            this.confirmLoading = false
+            this.$notify({
+              title: 'Success Restart',
+              message: 'Restart Successfully',
+              type: 'success',
+              duration: 2000
+            })
+            this.getList()
+          }).catch(err => {
+            console.error(err)
+            this.$notify({
+              title: 'Failed to Restart',
+              message: 'Restart Failed' + err,
+              type: 'warning',
+              duration: 2000
+            })
+          })
+        }).catch(()=> {
+          this.$message({
+            type: 'warning',
+            message: 'Restart cancled '
+          });   
         })
-        this.getList()
-      }).catch(err => {
-        console.error(err)
-        this.$notify({
-          title: 'Failed to Restart',
-          message: 'Restart Failed' + err,
-          type: 'warning',
-          duration: 2000
-        })
-      })
     }
 
   }

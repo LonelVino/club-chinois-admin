@@ -19,3 +19,5 @@ Too many duplicated part between vol and pitch, try to merge these 2 parts in to
 Obejcts.assign ({}) update the val of corresponding keys
 
 Getlist() after every modification, actually some times we only neee to get the item in this list 
+
+Some problems in Restart, caz we don't need to update others values

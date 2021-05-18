@@ -17,6 +17,7 @@ def all_scores(request):
             tmp['id'] = i.id
             tmp['name'] = i.name
             tmp['isPart'] = i.isPart
+            tmp['isFreeze'] = i.isFreeze
             tmp['number'] = i.number
             tmp['time'] = i.time
             tmp['v_score'] = i.v_score
@@ -48,7 +49,8 @@ def one_score(request):
             'msg': 'Parameters does not meet the requirements!'
         })     
 
-        info = {'id': vol_1.id, 'name': vol_1.name, 'isPart': vol_1.isPart, 'number': vol_1.number, 'v_score': vol_1.v_score, 'time': vol_1.time, 'comment': vol_1.comment}
+        info = {'id': vol_1.id, 'name': vol_1.name, 'isPart': vol_1.isPart,
+        'isFreeze': vol_1.isFreeze,'number': vol_1.number, 'v_score': vol_1.v_score, 'time': vol_1.time, 'comment': vol_1.comment}
         return JsonResponse({
             'code': 200,
             'msg': 'Get information successfully',
@@ -62,7 +64,7 @@ def add_score(request):
     if request.method == 'POST':
         received_json_data = json.loads(request.body)
         rec = received_json_data
-        vol_1 = Vol(name=rec['name'], isPart=rec['isPart'],  number=rec['number'], 
+        vol_1 = Vol(name=rec['name'], isPart=rec['isPart'], isFreeze=rec['isFreeze'],  number=rec['number'], 
         time=rec['time'], v_score=rec['v_score'], comment=rec['comment'])
         vol_1.save()
         return JsonResponse({
@@ -80,7 +82,8 @@ def update_score(request):
         rec = received_json_data
         vol_1 = Vol.objects.get(id = rec['id'])
         vol_1.name=rec['name']
-        vol_1.isPart=rec['isPart']
+        vol_1.isPart=rec['isPart'] 
+        vol_1.isFreeze=rec['isFreeze']
         vol_1.number=rec['number']
         vol_1.time=rec['time']
         vol_1.v_score=rec['v_score']
