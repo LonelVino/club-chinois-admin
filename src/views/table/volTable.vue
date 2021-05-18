@@ -57,11 +57,11 @@
       </el-table-column>
 
       <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
-        <template slot-scope="{row,$index}">
+        <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             Edit
           </el-button>
-          <el-button size="mini" type="danger" @click="confirmDelete(row,$index)">
+          <el-button size="mini" type="danger" @click="confirmDelete(row.id)">
             Delete
           </el-button>
         </template>
@@ -312,7 +312,7 @@ export default {
         
       })
     },
-    confirmDelete(row, index) {
+    confirmDelete(index) {
       this.$confirm('This operation will delete this information forever, are you sure?', 'Note', {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancle',
@@ -334,6 +334,7 @@ export default {
           type: 'success',
           duration: 2000
         })
+        this.getList()
       }).catch(e => {
         console.error(e)
         this.$message({
@@ -342,7 +343,6 @@ export default {
         });      
       })
       
-      this.list.splice(index, 1)
     },
 
     handleDownload() {

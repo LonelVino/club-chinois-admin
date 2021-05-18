@@ -89,7 +89,7 @@
           <el-button type="primary" size="mini" @click="handleUpdate(row)">
             Edit
           </el-button>
-          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="handleDelete(row.id)">
+          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="confirmDelete(row.id)">
             Delete
           </el-button>
         </template>
@@ -337,8 +337,23 @@ export default {
         }
       })
     },
-    handleDelete(id) {
-      deleteInfo(id).then(() => {
+    confirmDelete(index) {
+      this.$confirm('This operation will delete this information forever, are you sure?', 'Note', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(() => {
+          this.handleDelete(index)
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: 'Delete cancled'
+          });          
+        });
+    },
+    handleDelete(index) {
+      console.log('INDEX:', index)
+      deleteInfo(index).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',

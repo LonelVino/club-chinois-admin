@@ -24,8 +24,8 @@ export default {
   },
   data() {
     return {
-      title: 'Vue Element Admin',
-      logo: 'https://wpimg.wallstcn.com/69a1c46c-eb1c-4b46-8bd4-e9e686ef5251.png'
+      title: 'Club Chinois Admin',
+      logo: 'https://cdn.viarezo.fr/static/image/2f8ac78626209e1477da9b7d94dc0455f621669d6d7f6cef84624bad8b801954.jpg'
     }
   }
 }
