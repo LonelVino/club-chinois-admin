@@ -83,12 +83,15 @@
         </template>
       </el-table-column>
 
-     <el-table-column label="Actions" align="center" width="300" class-name="small-padding fixed-width">
+     <el-table-column label="Actions" align="center" width="350" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleSubmit(row)">
             Submit
           </el-button>
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+          <el-button type="warning" size="mini" @click="handleCancle(row)">
+            Cancle
+          </el-button>
+          <el-button type="info" size="mini" @click="handleUpdate(row)">
             Edit in Dialog
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="confirmDelete(row.id)">
@@ -218,6 +221,10 @@ export default {
       this.$delete(row, 'isEdit')
       this.inlineUpdateData(row)
     },
+    handleCancle(row) {
+      this.getList()
+    },
+
 
     getList() {
       this.listLoading = true
