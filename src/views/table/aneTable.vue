@@ -11,7 +11,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-refresh-right" @click="ResetFilter">
         Reset
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate" disabled>
         Add
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
@@ -47,19 +47,37 @@
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="isPart" class-name="status-col" align="center" width="100">
+        <template slot-scope="scope">
+         <el-switch
+            v-model="scope.row.isPart"
+            :active-value="1"
+            :inactive-value="0"
+            active-color="#02538C"
+            inactive-color="#B9B9B9"
+            @change="changeSwitch(scope.row)"
+            v-bind:disabled="scope.row.isPart"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="isFini" class-name="status-col" align="center" width="100">
         <template slot-scope="scope">
-          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.isFini}}</div>
-          <div v-else>
-            <el-input v-model="scope.row.isFini" type='number' @click="handleClick(scope.row)"></el-input>
-          </div>
+          <el-switch
+            v-model="scope.row.isFini"
+            :active-value="1"
+            :inactive-value="0"
+            active-color="#02538C"
+            inactive-color="#B9B9B9"
+            @change="changeSwitch(scope.row)"
+            v-bind:disabled="scope.row.isFini || !scope.row.isPart"
+          />
         </template>
       </el-table-column>
       <el-table-column label="Time" class-name="status-col" align="center" width="100">
         <template slot-scope="scope">
           <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.time}}</div>
           <div v-else>
-            <el-input v-model="scope.row.time" type='number' @click="handleClick(scope.row)"></el-input>
+            <el-input  v-model="scope.row.time" type='number' @click="handleClick(scope.row)"></el-input>
           </div>
         </template>
       </el-table-column>
@@ -80,7 +98,7 @@
         </template>
       </el-table-column>
 
-     <el-table-column label="Actions" align="center" width="350" class-name="small-padding fixed-width">
+     <el-table-column label="Actions" align="center" width="420" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleSubmit(row)">
             Submit
@@ -94,6 +112,9 @@
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" disabled @click="confirmDelete(row.id)">
             Delete
           </el-button>
+          <el-button type="warning" size="mini"  @click="handleRestart(row)">
+            Restart
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -104,7 +125,10 @@
         <el-form-item label="Name" prop="name" required>
           <el-input v-model="temp.name" disabled />
         </el-form-item>
-        <el-form-item label="isFini?">
+        <el-form-item label="Have Participated?">
+          <el-switch v-model="temp.isPart"></el-switch>
+        </el-form-item>
+        <el-form-item label="Have Fininshed?">
           <el-switch v-model="temp.isFini"></el-switch>
         </el-form-item>
         <el-form-item label="Time" prop="time"  required>
@@ -173,6 +197,7 @@ export default {
       temp: {
         id: undefined,
         name: 'None',
+        isPart: 0,
         isFini: 0,
         a_score: 0,
         time: 0,
@@ -228,7 +253,13 @@ export default {
       getAllScores().then(response => {
         // Just to simulate the time of the request
         this.list = response.data.infos
-        this.tmp_list = response.data.infos
+        for (var i = 0; i < this.list.length; i++) {
+          this.list[i].isPart = (this.list[i].isPart==true  || this.list[i].isPart == 1) ? 1 : 0  
+          this.list[i].isFini = (this.list[i].isFini==true  || this.list[i].isFini == 1) ? 1 : 0  
+        }
+        
+        this.tmp_list = this.list
+        console.log(this.list)
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
@@ -301,6 +332,7 @@ export default {
       this.temp = {
         id: undefined,
         name: 'None',
+        isPart: 0,
         isFini: 0,
         a_score: 0,
         time: 0,
@@ -319,7 +351,9 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          this.temp.isFini = (this.temp.isFini == true) ? 1 : 0 
+          console.log('this.temp.isPart, this.temp.isFini: ', this.temp.isPart, this.temp.isFini)
+          // this.temp.isPart = (this.temp.isPart == true  || tempData.isFini == 1) ? 1 : 0 
+          // this.temp.isFini = (this.temp.isFini == true  || tempData.isFini == 1) ? 1 : 0 
           this.temp.time = parseInt(this.temp.time)
           this.temp.a_score = parseInt(this.temp.a_score)
           addScore(this.temp).then(response => {
@@ -356,7 +390,9 @@ export default {
     updateData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          console.log('this.temp.isPart, this.temp.isFini: ', this.temp.isPart, this.temp.isFini)
           const tempData = Object.assign({}, this.temp)
+          tempData.isPart = (tempData.isPart == true || tempData.isPart == 1) ? 1 : 0           
           tempData.isFini = (tempData.isFini == true || tempData.isFini == 1) ? 1 : 0 
           tempData.time = parseInt(tempData.time)
           tempData.a_score = parseInt(tempData.a_score)
@@ -382,6 +418,7 @@ export default {
       })
     },
     inlineUpdateData(row) {
+      console.log('this.temp.isPart, this.temp.isFini: ', this.temp.isPart, this.temp.isFini)
       const tempData = Object.assign({}, row)
       tempData.isFini = parseInt(tempData.isFini)
       tempData.isFini = (tempData.isFini == true || tempData.isFini == 1) ? 1 : 0 
@@ -398,6 +435,7 @@ export default {
           type: 'success',
           duration: 2000
         })
+        this.getList()
       }).catch(err => {
         console.error(err)
         this.$notify({
@@ -442,8 +480,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['ID', 'name', 'isFinished', 'Time', 'Score', 'Country', 'Comments']
-        const filterVal = ['id', 'name', 'isFini', 'time', 'a_score', 'pays', 'comment']
+        const tHeader = ['ID', 'name', 'has Participated?', 'has Finished?', 'Time', 'Score', 'Country', 'Comments']
+        const filterVal = ['id', 'name','isPart', 'isFini', 'time', 'a_score', 'pays', 'comment']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
@@ -462,6 +500,36 @@ export default {
         }
       }))
     },
+    changeSwitch(row) {
+
+    },
+    handleRestart (row) {
+      const tempData = Object.assign({}, row)
+      tempData.isFini = 0
+      tempData.isPart = 0
+      tempData.time = parseInt(tempData.time)
+      tempData.a_score = parseInt(tempData.a_score)
+      updateScore(tempData).then(() => {
+        this.confirmLoading = true
+        this.dialogFormVisible = false
+        this.confirmLoading = false
+        this.$notify({
+          title: 'Success Restart',
+          message: 'Restart Successfully',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
+      }).catch(err => {
+        console.error(err)
+        this.$notify({
+          title: 'Failed to Restart',
+          message: 'Restart Failed' + err,
+          type: 'warning',
+          duration: 2000
+        })
+      })
+    }
   }
 }
 </script>

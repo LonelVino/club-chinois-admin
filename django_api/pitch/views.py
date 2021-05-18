@@ -17,6 +17,8 @@ def all_scores(request):
             tmp = {}
             tmp['id'] = i.id
             tmp['name'] = i.name
+            tmp['isPart'] = i.isPart
+            tmp['isFini'] = i.isFini
             tmp['number'] = i.number
             tmp['time'] = i.time
             tmp['p_score'] = i.p_score
@@ -48,7 +50,9 @@ def one_score(request):
             'msg': 'Parameters does not meet the requirements!'
         })     
 
-        info = {'id': pitch_1.id, 'name': pitch_1.name, 'number': pitch_1.number, 'p_score': pitch_1.p_score, 'time': pitch_1.time, 'comment': pitch_1.comment}
+        info = {'id': pitch_1.id, 'name': pitch_1.name, 'isFini': pitch_1.isFini, 
+        'isPart': pitch_1.isPart, 'number': pitch_1.number, 
+        'p_score': pitch_1.p_score, 'time': pitch_1.time, 'comment': pitch_1.comment}
         return JsonResponse({
             'code': 200,
             'msg': 'Get information successfully',
@@ -62,7 +66,8 @@ def add_score(request):
     if request.method == 'POST':
         received_json_data = json.loads(request.body)
         rec = received_json_data
-        pitch_1 = Pitch(name=rec['name'], number=rec['number'], time=rec['time'], p_score=rec['p_score'], comment=rec['comment'])
+        pitch_1 = Pitch(name=rec['name'], isPart=rec['isPart'], isFini=rec['isFini'],
+        number=rec['number'], time=rec['time'], p_score=rec['p_score'], comment=rec['comment'])
         pitch_1.save()
         return JsonResponse({
             'code': 200,
@@ -79,6 +84,8 @@ def update_score(request):
         rec = received_json_data
         pitch_1 = Pitch.objects.get(id = rec['id'])
         pitch_1.name=rec['name']
+        pitch_1.isPart=rec['isPart']
+        pitch_1.isFini=rec['isFini']
         pitch_1.number=rec['number']
         pitch_1.time=rec['time']
         pitch_1.p_score=rec['p_score']

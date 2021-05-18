@@ -2,13 +2,16 @@
   <div class="app-container">
     <div class="filter-container">
       <el-input v-model="listQuery.name" placeholder="Name" style="width: 200px;" class="filter-item" @keyup.enter.native="handleFilter" />
+      <el-select v-model="listQuery.isFini" placeholder="isFini" clearable style="width: 90px" class="filter-item">
+        <el-option v-for="item in isFiniOptions" :key="item" :label="item"  :value="item" />
+      </el-select>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-search" @click="handleFilter">
         Search
       </el-button>
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-refresh-right" @click="ResetFilter">
         Reset
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <el-button class="filter-item" style="margin-left: 10px;" disabled type="primary" icon="el-icon-edit" @click="handleCreate">
         Add
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
@@ -43,19 +46,37 @@
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="isPart" class-name="status-col" align="center" width="100">
+        <template slot-scope="scope">
+         <el-switch
+            v-model="scope.row.isPart"
+            :active-value="1"
+            :inactive-value="0"
+            active-color="#02538C"
+            inactive-color="#B9B9B9"
+            @change="changeSwitch(scope.row)"
+            v-bind:disabled="scope.row.isPart"
+          />
+        </template>
+      </el-table-column>
+      <el-table-column label="isFini" class-name="status-col" align="center" width="100">
+        <template slot-scope="scope">
+          <el-switch
+            v-model="scope.row.isFini"
+            :active-value="1"
+            :inactive-value="0"
+            active-color="#02538C"
+            inactive-color="#B9B9B9"
+            @change="changeSwitch(scope.row)"
+            v-bind:disabled="scope.row.isFini || !scope.row.isPart"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="number" align="center" class-name="status-col" width="100">
         <template slot-scope="scope">
           <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.number }}</div>
           <div v-else>
             <el-input v-model="scope.row.number"  type='number'  @click="handleClick(scope.row)"></el-input>
-          </div>
-        </template>
-      </el-table-column>
-      <el-table-column label="Time" class-name="status-col" align="center" width="100">
-        <template slot-scope="scope">
-          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.time }}</div>
-          <div v-else>
-            <el-input v-model="scope.row.time"  type='number'  @click="handleClick(scope.row)"></el-input>
           </div>
         </template>
       </el-table-column>
@@ -76,7 +97,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Actions" align="center" width="350" class-name="small-padding fixed-width">
+      <el-table-column label="Actions" align="center" width="420" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleSubmit(row)">
             Submit
@@ -90,6 +111,9 @@
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="confirmDelete(row.id)" disabled>
             Delete
           </el-button>
+          <el-button type="warning" size="mini"  @click="handleRestart(row)">
+            Restart
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -101,11 +125,14 @@
         <el-form-item label="Name" prop="name" required>
           <el-input v-model="temp.name" disabled/>
         </el-form-item>
+        <el-form-item label="Have Participated?">
+          <el-switch v-model="temp.isPart"></el-switch>
+        </el-form-item>
+        <el-form-item label="Have Fininshed?">
+          <el-switch v-model="temp.isFini"></el-switch>
+        </el-form-item>
         <el-form-item label="Number" prop="number" required>
           <el-input v-model="temp.number" />
-        </el-form-item>
-        <el-form-item label="Time" prop="time"  required>
-          <el-input  type="number" v-model="temp.time" />
         </el-form-item>
         <el-form-item label="Score" prop="p_score" required>
           <el-input  type="number" v-model="temp.p_score" />
@@ -160,13 +187,16 @@ export default {
       listQuery: {
         page: 1,
         limit: 20,
+        isFini: undefined,
         name: undefined,
       },
       showReviewer: true,
-
+      isFiniOptions: ['true', 'false'],
       temp: {
         id: undefined,
         name: 'None',
+        isPart: 0,
+        isFini: 0,
         number: 0,
         p_score: 0,
         time: 0,
@@ -223,7 +253,11 @@ export default {
       getAllScores(this.listQuery).then(response => {
         // Just to simulate the time of the request
         this.list = response.data.infos
-        this.tmp_list = response.data.infos
+        for (var i = 0; i < this.list.length; i++) {
+          this.list[i].isPart = (this.list[i].isPart==true  || this.list[i].isPart == 1) ? 1 : 0  
+          this.list[i].isFini = (this.list[i].isFini==true  || this.list[i].isFini == 1) ? 1 : 0  
+        }
+        this.tmp_list = this.list
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
@@ -234,7 +268,16 @@ export default {
       var new_array = []
       this.list = this.tmp_list
       console.log(this.listQuery, this.list)
-      if (this.listQuery.name != undefined && this.listQuery.name != "" ) {
+      if (this.listQuery.isFini != undefined  && (this.listQuery.name != undefined && this.listQuery.name != "" )) {
+        for (var i = 0; i < this.list.length; i++) {
+          var cor2isFini = (this.list[i].isFini === true && this.listQuery.isFini == 'true') || (this.list[i].isFini === false && this.listQuery.isFini == 'false')
+          if ((this.list[i].name == this.listQuery.name) && cor2isFini) {
+            new_array.push(this.list[i])
+          }
+        }
+        this.list = new_array
+        console.log('FILTER ACCORDING TO BOTH THE NAME AND ISFINI.....')        
+      } else if (this.listQuery.name != undefined && this.listQuery.name != "" ) {
         for (var i = 0; i < this.list.length; i++) {
           if (this.list[i].name == this.listQuery.name) {
             new_array.push(this.list[i])
@@ -242,6 +285,14 @@ export default {
         }
         this.list = new_array
         console.log('FILTER ACCORDING TO THE NAME.....')
+      } else if (this.listQuery.isFini != undefined) {
+        for (var i = 0; i < this.list.length; i++) {
+          if ((this.list[i].isFini == true && this.listQuery.isFini == 'true') || (this.list[i].isFini == false && this.listQuery.isFini == 'false')) {
+            new_array.push(this.list[i])
+          } 
+        }
+        this.list = new_array
+        console.log('FILTER ACCORDING TO ISFINI.....')
       } else  {
         this.getList()
         this.$message({
@@ -249,7 +300,7 @@ export default {
           message: 'NO FILTER'
         })
       }
-      console.log('AFTER FILTERING, THE LIST IS: ', this.list)
+    console.log('AFTER FILTERING, THE LIST IS: ', this.list)
     },
     ResetFilter() {
       this.getList()
@@ -280,6 +331,8 @@ export default {
       this.temp = {
         id: undefined,
         name: 'None',
+        sPart: 0,
+        isFini: 0,
         number: 0,
         p_score: 0,
         time: 0,
@@ -297,6 +350,8 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
+          // this.temp.isPart = (this.temp.isPart == true  || tempData.isFini == 1) ? 1 : 0 
+          // this.temp.isFini = (this.temp.isFini == true  || tempData.isFini == 1) ? 1 : 0 
           this.temp.number = parseInt(this.temp.number)
           this.temp.time = parseInt(this.temp.time)
           this.temp.p_score = parseInt(this.temp.p_score)
@@ -320,7 +375,6 @@ export default {
             })
           })
           this.resetTemp()
-          location.reload()
         }
       })
     },
@@ -336,6 +390,8 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
+          this.temp.isPart = (this.temp.isPart == true  || tempData.isFini == 1) ? 1 : 0 
+          this.temp.isFini = (this.temp.isFini == true  || tempData.isFini == 1) ? 1 : 0 
           tempData.number = parseInt(tempData.number)
           tempData.time = parseInt(tempData.time)
           tempData.p_score = parseInt(tempData.p_score)
@@ -363,6 +419,8 @@ export default {
     },
     inlineUpdateData(row) {
       const tempData = Object.assign({}, row)
+      tempData.isFini = parseInt(tempData.isFini)
+      tempData.isFini = (tempData.isFini == true || tempData.isFini == 1) ? 1 : 0 
       tempData.number = parseInt(tempData.number)
       tempData.time = parseInt(tempData.time)
       tempData.p_score = parseInt(tempData.p_score)
@@ -377,6 +435,7 @@ export default {
           type: 'success',
           duration: 2000
         })
+        this.getList()
       }).catch(err => {
         console.error(err)
         this.$notify({
@@ -442,6 +501,37 @@ export default {
         }
       }))
     },
+    changeSwitch(row) {
+
+    },
+    handleRestart (row) {
+      const tempData = Object.assign({}, row)
+      tempData.isFini = 0
+      tempData.isPart = 0
+      tempData.time = parseInt(tempData.time)
+      tempData.a_score = parseInt(tempData.a_score)
+      updateScore(tempData).then(() => {
+        this.confirmLoading = true
+        this.dialogFormVisible = false
+        this.confirmLoading = false
+        this.$notify({
+          title: 'Success Restart',
+          message: 'Restart Successfully',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
+      }).catch(err => {
+        console.error(err)
+        this.$notify({
+          title: 'Failed to Restart',
+          message: 'Restart Failed' + err,
+          type: 'warning',
+          duration: 2000
+        })
+      })
+    }
+
   }
 }
 </script>

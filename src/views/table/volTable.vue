@@ -8,7 +8,7 @@
       <el-button v-waves class="filter-item" type="primary" icon="el-icon-refresh-right" @click="ResetFilter">
         Reset
       </el-button>
-      <el-button class="filter-item" style="margin-left: 10px;" type="primary" icon="el-icon-edit" @click="handleCreate">
+      <el-button class="filter-item" style="margin-left: 10px;" disabled type="primary" icon="el-icon-edit" @click="handleCreate">
         Add
       </el-button>
       <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
@@ -43,6 +43,19 @@
           <span>{{ row.name }}</span>
         </template>
       </el-table-column>
+      <el-table-column label="isPart" class-name="status-col" align="center" width="100">
+        <template slot-scope="scope">
+         <el-switch
+            v-model="scope.row.isPart"
+            :active-value="1"
+            :inactive-value="0"
+            active-color="#02538C"
+            inactive-color="#B9B9B9"
+            @change="changeSwitch(scope.row)"
+            v-bind:disabled="scope.row.isPart"
+          />
+        </template>
+      </el-table-column>
       <el-table-column label="number" class-name="status-col" align="center" width="100">
         <template slot-scope="scope">
           <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.number }}</div>
@@ -68,7 +81,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="Actions" align="center" width="350" class-name="small-padding fixed-width">
+      <el-table-column label="Actions" align="center" width="420" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
           <el-button type="primary" size="mini" @click="handleSubmit(row)">
             Submit
@@ -82,18 +95,22 @@
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="confirmDelete(row.id)" disabled>
             Delete
           </el-button>
+          <el-button type="warning" size="mini"  @click="handleRestart(row)">
+            Restart
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
-    <div class="test">
-      <el-button @click="test_add_only_name()">Add Vol with name</el-button>
-    </div>
+
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.limit" @pagination="getList" />
 
     <el-dialog :title="textMap[dialogStatus]" :visible.sync="dialogFormVisible">
       <el-form ref="dataForm" :rules="rules" :model="temp" label-position="left" label-width="80px" style="width: 400px; margin-left:50px;">
         <el-form-item label="Name" prop="name" required>
           <el-input v-model="temp.name" disabled />
+        </el-form-item>
+        <el-form-item label="Have Participated?">
+          <el-switch v-model="temp.isPart"></el-switch>
         </el-form-item>
         <el-form-item label="Number" prop="number" required>
           <el-input v-model="temp.number" />
@@ -164,6 +181,7 @@ export default {
       temp: {
         id: undefined,
         name: 'None',
+        isPart: 0,
         number: 0,
         v_score: 0,
         time: 0,
@@ -219,7 +237,10 @@ export default {
       getAllScores(this.listQuery).then(response => {
         // Just to simulate the time of the request
         this.list = response.data.infos
-        this.tmp_list = response.data.infos
+        for (var i = 0; i < this.list.length; i++) {
+          this.list[i].isPart = (this.list[i].isPart==true  || this.list[i].isPart == 1) ? 1 : 0  
+        }
+        this.tmp_list = this.list
         setTimeout(() => {
           this.listLoading = false
         }, 1.5 * 1000)
@@ -277,6 +298,7 @@ export default {
         id: undefined,
         name: 'None',
         number: 0,
+        isPart: 0,
         v_score: 0,
         time: 0,
         comment: ''
@@ -331,6 +353,7 @@ export default {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
+          tempData.isPart = (tempData.isPart == true || tempData.isPart == 1) ? 1 : 0           
           tempData.number = parseInt(tempData.number)
           tempData.time = parseInt(tempData.time)
           tempData.v_score = parseInt(tempData.v_score)
@@ -372,6 +395,7 @@ export default {
           type: 'success',
           duration: 2000
         })
+        this.getList()      
       }).catch(err => {
         console.error(err)
         this.$notify({
@@ -418,8 +442,8 @@ export default {
     handleDownload() {
       this.downloadLoading = true
       import('@/vendor/Export2Excel').then(excel => {
-        const tHeader = ['ID', 'name', 'number', 'Score', 'Comments']
-        const filterVal = ['id', 'name', 'number', 'v_score', 'comment']
+        const tHeader = ['ID', 'name', 'has Participated?', 'number', 'Score', 'Comments']
+        const filterVal = ['id', 'name', 'isPart', 'number', 'v_score', 'comment']
         const data = this.formatJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
@@ -439,29 +463,36 @@ export default {
       }))
     },
 
-    test_add_only_name() {
-      const request_body = {
-        name: 'Haonan'
-      }
-      test_addScore(request_body).then(response => {
-        // Just to simulate the time of the request
-        this.$message({
-          message: 'TEST, ADD ' + response.data.name + "'s Score Successfully!",
-          type: 'success'
-        })
-        this.listLoading = true
+    changeSwitch(row) {
+
+    },
+    handleRestart (row) {
+      const tempData = Object.assign({}, row)
+      tempData.isPart = 0
+      tempData.time = parseInt(tempData.time)
+      tempData.a_score = parseInt(tempData.a_score)
+      updateScore(tempData).then(() => {
+        this.confirmLoading = true
         this.dialogFormVisible = false
-        setTimeout(() => {
-          this.getList()
-        }, 1.5 * 1000)
-      }).catch (e => {
-        console.error(e)
-        this.$message({
-          message: 'ADD Score failed!',
-          type: 'danger'
+        this.confirmLoading = false
+        this.$notify({
+          title: 'Success Restart',
+          message: 'Restart Successfully',
+          type: 'success',
+          duration: 2000
+        })
+        this.getList()
+      }).catch(err => {
+        console.error(err)
+        this.$notify({
+          title: 'Failed to Restart',
+          message: 'Restart Failed' + err,
+          type: 'warning',
+          duration: 2000
         })
       })
     }
+
   }
 }
 </script>

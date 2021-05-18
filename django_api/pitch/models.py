@@ -12,6 +12,10 @@ from django_api.user.models import User
 class Pitch(models.Model):
     # Name of ane
     name = models.CharField(max_length=100)
+    # if the user take part in the game,  0 - not, 1 otherwise
+    isPart = models.BooleanField(default=0)
+    # if the user finished the game,  0 - unfinished, 1  otherwise
+    isFini = models.BooleanField(default=0)
     # if the user finished the game,  - unfinished,  otherwise
     number = models.IntegerField(default=0)
     # The time used to finish the game, unfinished -> 0

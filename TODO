@@ -17,3 +17,5 @@ Too many duplicated part between vol and pitch, try to merge these 2 parts in to
 
 ## Javascript
 Obejcts.assign ({}) update the val of corresponding keys
+
+Getlist() after every modification, actually some times we only neee to get the item in this list 
