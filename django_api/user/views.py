@@ -11,9 +11,6 @@ from django_api.user.models import User
 from django_api.vol.models import Vol
 from django_api.ane.models import Ane
 from django_api.pitch.models import Pitch
-from django_api.vol.views import add_score as vol_add_score
-from django_api.ane.views import add_score as ane_add_score
-from django_api.pitch.views import add_score as pitch_add_score
 
 def all_user_names(request):
     if request.method == 'GET':
@@ -37,6 +34,10 @@ def all_user_infos(request):
             tmp_user['score'] = user.score; tmp_user['email'] = user.email; tmp_user['telephone'] = user.telephone; tmp_user['loc'] = user.loc;
             tmp_user['pays'] = user.pays
             all_infos.append(tmp_user)
+            ane_1 = Ane.objects.get(user_id=user.id)
+            vol_1 = Vol.objects.get(user_id=user.id)
+            pitch_1 = Pitch.objects.get(user_id=user.id)
+            tmp_user['isAne'] = ane_1.isPart;  tmp_user['isVol'] = vol_1.isPart;  tmp_user['isPitch'] = pitch_1.isPart;
         return JsonResponse({
             'code': 200,
             'msg': 'get all information successfully',

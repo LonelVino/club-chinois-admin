@@ -76,7 +76,7 @@
         <template slot-scope="scope">
           <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.number }}</div>
           <div v-else>
-            <el-input v-model="scope.row.number"  type='number'  @click="handleClick(scope.row)"></el-input>
+            <el-input v-bind:disabled="scope.row.isFini" v-model="scope.row.number"  type='number'  @click="handleClick(scope.row)"></el-input>
           </div>
         </template>
       </el-table-column>
@@ -84,7 +84,7 @@
         <template slot-scope="scope">
           <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.p_score }}</div>
           <div v-else>
-            <el-input v-model="scope.row.p_score"  type='number'  @click="handleClick(scope.row)"></el-input>
+            <el-input v-bind:disabled="scope.row.isFini" v-model="scope.row.p_score"  type='number'  @click="handleClick(scope.row)"></el-input>
           </div>
         </template>
       </el-table-column>
@@ -92,20 +92,20 @@
         <template slot-scope="scope">
           <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.comment }}</div>
           <div v-else>
-            <el-input v-model="scope.row.comment" @click="handleClick(scope.row)"></el-input>
+            <el-input v-bind:disabled="scope.row.isFini" v-model="scope.row.comment" @click="handleClick(scope.row)"></el-input>
           </div>
         </template>
       </el-table-column>
 
       <el-table-column label="Actions" align="center" width="420" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" @click="handleSubmit(row)">
+          <el-button type="primary" size="mini" @click="handleSubmit(row)" v-bind:disabled="row.isFini">
             Submit
           </el-button>
-          <el-button type="warning" size="mini" @click="handleCancle(row)">
+          <el-button type="warning" size="mini" @click="handleCancle(row)" v-bind:disabled="row.isFini">
             Cancle
           </el-button>
-          <el-button type="info" size="mini" @click="handleUpdate(row)">
+          <el-button type="info" size="mini" @click="handleUpdate(row)" v-bind:disabled="row.isFini">
             Edit in Dialog
           </el-button>
           <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="confirmDelete(row.id)" disabled>
