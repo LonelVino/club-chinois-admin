@@ -19,6 +19,10 @@
       </el-checkbox>
     </div>
 
+    <div class="note">
+      <p class="note-txt">You can only modify one row at a time, not multiple rows of data.</p>
+    </div>
+
     <el-table
       :key="tableKey"
       v-loading="listLoading"
@@ -28,7 +32,6 @@
       highlight-current-row
       style="width: 100%;"
       @sort-change="sortChange"
-      align="center"
     >
       <el-table-column label="ID" prop="id" align="center" width="80">
         <template slot-scope="{row}">
@@ -36,32 +39,47 @@
         </template>
       </el-table-column>
       <el-table-column label="Name" width="200px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.name }}</span>
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.name }}</div>
+          <div v-else>
+            <el-input v-model="scope.row.name" @click="handleClick(scope.row)"></el-input>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="number" class-name="status-col" align="center" width="100">
-        <template slot-scope="{row}">
-          <span>{{ row.number }}</span>
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.number }}</div>
+          <div v-else>
+            <el-input v-model="scope.row.number"  type='number'  @click="handleClick(scope.row)"></el-input>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="Score" sortable="custom" width="100px" align="center">
-        <template slot-scope="{row}">
-          <span>{{ row.v_score }}</span>
+        <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.v_score }}</div>
+          <div v-else>
+            <el-input v-model="scope.row.v_score"  type='number'  @click="handleClick(scope.row)"></el-input>
+          </div>
         </template>
       </el-table-column>
       <el-table-column v-if="showReviewer" label="Comments" width="200">
-        <template slot-scope="{row}">
-          <span style="color:red;">{{ row.comment }}</span>
+         <template slot-scope="scope">
+          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.comment }}</div>
+          <div v-else>
+            <el-input v-model="scope.row.comment" @click="handleClick(scope.row)"></el-input>
+          </div>
         </template>
       </el-table-column>
 
-      <el-table-column label="Actions" align="center" width="230" class-name="small-padding fixed-width">
+      <el-table-column label="Actions" align="center" width="300" class-name="small-padding fixed-width">
         <template slot-scope="{row}">
-          <el-button type="primary" size="mini" @click="handleUpdate(row)">
-            Edit
+          <el-button type="primary" size="mini" @click="handleSubmit(row)">
+            Submit
           </el-button>
-          <el-button size="mini" type="danger" @click="confirmDelete(row.id)">
+          <el-button type="primary" size="mini" @click="handleUpdate(row)">
+            Edit in Dialog
+          </el-button>
+          <el-button v-if="row.status!='deleted'" size="mini" type="danger" @click="confirmDelete(row.id)">
             Delete
           </el-button>
         </template>
@@ -139,8 +157,8 @@ export default {
         limit: 20,
         name: undefined,
       },
-      statusOptions: ['published', 'draft', 'deleted'],
       showReviewer: true,
+
       temp: {
         id: undefined,
         name: 'None',
@@ -149,6 +167,8 @@ export default {
         time: 0,
         comment: ''
       },
+
+      // Edit dialog configuration
       dialogFormVisible: false,
       dialogStatus: '',
       textMap: {
@@ -169,6 +189,27 @@ export default {
     this.getList()
   },
   methods: {
+    // Implmement edit in the table
+    handleClick(row) {
+      // 动态设置数据并通过这个数据判断显示方式
+      if (row.isEdit) {
+        this.$delete(row, 'isEdit')
+      } else {
+        this.$confirm('Note! You can only modify one row at a time, not multiple rows of data!', 'Warning', {
+          confirmButtonText: 'Confirm',
+          cancelButtonText: 'Cancle',
+          type: 'warning'
+        }).then(()=>{
+          this.$set(row, 'isEdit', true);
+        })
+      }
+    },
+    handleSubmit(row) {
+      this.$delete(row, 'isEdit')
+      this.inlineUpdateData(row)
+    },
+
+
     getList() {
       this.listLoading = true
       getAllScores(this.listQuery).then(response => {
@@ -312,6 +353,32 @@ export default {
         
       })
     },
+    inlineUpdateData(row) {
+      const tempData = Object.assign({}, row)
+      tempData.number = parseInt(tempData.number)
+      tempData.time = parseInt(tempData.time)
+      tempData.v_score = parseInt(tempData.v_score)
+      console.log('TEMPDATA:', tempData)
+      updateScore(tempData).then(() => {
+        this.confirmLoading = true
+        this.dialogFormVisible = false
+        this.confirmLoading = false
+        this.$notify({
+          title: 'Success',
+          message: 'Update Successfully',
+          type: 'success',
+          duration: 2000
+        })
+      }).catch(err => {
+        console.error(err)
+        this.$notify({
+          title: 'Failed to update',
+          message: 'Update Failed' + err,
+          type: 'warning',
+          duration: 2000
+        })
+      })
+    },
     confirmDelete(index) {
       this.$confirm('This operation will delete this information forever, are you sure?', 'Note', {
           confirmButtonText: 'Confirm',
@@ -371,3 +438,22 @@ export default {
   }
 }
 </script>
+
+
+
+<style scoped>
+.note {
+  display: flex;
+  flex-direction: column;
+  justify-content: start;
+}
+.note-txt {
+  font-weight: bold;
+  color:rgb(226, 134, 13);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 14px;
+  margin: 0.2vw;
+  display: flex;
+  justify-content: flex-start;
+}
+</style>

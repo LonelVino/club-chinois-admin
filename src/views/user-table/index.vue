@@ -34,18 +34,10 @@
       @sort-change="sortChange"
     >
       <el-table-column label="ID" prop="id" sortable="custom" align="center" width="80">
-        <template slot-scope="scope">
-          <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.id }}</div>
-          <div v-else>
-            <el-input v-model="scope.row.id" @click="handleClick(scope.row)"></el-input>
-          </div>
+        <template slot-scope="{row}">
+          <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <!-- <el-table-column label="按钮">
-        <template slot-scope="scope">
-          <el-button @click="handleClick(scope.row)">{{ scope.row.isEdit ? '完成' : '编辑' }}</el-button>
-        </template>
-      </el-table-column> -->
       <el-table-column label="Name" width="100px" align="center">
         <template slot-scope="scope">
           <div v-if="!scope.row.isEdit" @click="handleClick(scope.row)"> {{ scope.row.name }}</div>
@@ -197,8 +189,6 @@ export default {
         limit: 20,
         name: undefined,
       },
-
-      statusOptions: ['deleted'],
       showReviewer: false,
 
       temp: {
@@ -214,7 +204,6 @@ export default {
         pays: 'None'
       },
 
-      // Edit in the table
 
       // Edit dialog configuration
       dialogFormVisible: false,
@@ -232,7 +221,6 @@ export default {
       },
       downloadLoading: false,
       confirmLoading: false,
-
     }
   },
   created() {
@@ -277,7 +265,9 @@ export default {
       this.listQuery.page = 1
       this.getList()
     },
-
+    ResetFilter() {
+      this.getList()
+    },
     handleModifyStatus(row, status) {
       this.$message({
         message: '操作Success',
@@ -285,20 +275,18 @@ export default {
       })
       row.status = status
     },
-
-    sortChange(data) {
-      const { prop, order } = data
-      if (prop === 'id') {
-        this.sortByID(order)
+    compare(p) {
+      return function(m,n){
+        var a = m[p];
+        var b = n[p];
+        return b - a; //升序
       }
     },
-    sortByID(order) {
-      if (order === 'ascending') {
-        this.listQuery.sort = '+id'
-      } else {
-        this.listQuery.sort = '-id'
-      }
-      this.handleFilter()
+    sortChange(data) {
+      const { prop, order } = data
+      this.tmp_list = this.list
+      this.list.sort(this.compare("a_score"));
+      console.log(this.list)
     },
 
     resetTemp() {
@@ -310,8 +298,8 @@ export default {
         isPitch: 0,
         score: 0,
         email: '',
-        telephone: '',
-        loc: '',
+        telephone: 'None',
+        loc: 'None',
         pays: ''
       }
     },
