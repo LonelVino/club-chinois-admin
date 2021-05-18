@@ -615,6 +615,7 @@ export default {
           tempData.isFini = 0
           tempData.isPart = 0
           tempData.time = parseInt(tempData.time)
+          tempData.isPart = 1
           tempData.a_score = parseInt(tempData.a_score)
           updateScore(tempData).then(() => {
             this.confirmLoading = true
