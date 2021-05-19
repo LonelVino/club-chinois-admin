@@ -1,4 +1,4 @@
-# django_vue_template
+# Club Chinois Admin
 
 > A Vue.js project
 
