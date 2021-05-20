@@ -1,0 +1,485 @@
+.
+├── API.md
+├── build
+│   ├── build.js
+│   ├── check-versions.js
+│   ├── logo.png
+│   ├── utils.js
+│   ├── vue-loader.conf.js
+│   ├── webpack.base.conf.js
+│   ├── webpack.dev.conf.js
+│   └── webpack.prod.conf.js
+├── config
+│   ├── dev.env.js
+│   ├── index.js
+│   ├── prod.env.js
+│   └── test.env.js
+├── dist
+│   ├── favicon.ico
+│   ├── index.html
+│   └── static
+│       ├── css
+│       │   ├── app.92b486f1e52a2180e14a2af64d417507.css
+│       │   └── app.92b486f1e52a2180e14a2af64d417507.css.map
+│       ├── favicon.ico
+│       ├── fonts
+│       │   ├── element-icons.535877f.woff
+│       │   └── element-icons.732389d.ttf
+│       ├── img
+│       │   ├── 401.089007e.gif
+│       │   └── 404.a57b6f3.png
+│       └── js
+│           ├── 0.9f2d5d22b76d1a9d8cfd.js
+│           ├── 0.9f2d5d22b76d1a9d8cfd.js.map
+│           ├── 12.9ca05b7f5a1785a46687.js
+│           ├── 12.9ca05b7f5a1785a46687.js.map
+│           ├── 1.554770fd373a4d1e0eb8.js
+│           ├── 1.554770fd373a4d1e0eb8.js.map
+│           ├── 2.f4e3a0bc6ea8bb292fb5.js
+│           ├── 2.f4e3a0bc6ea8bb292fb5.js.map
+│           ├── 3.eb08efa7ba589d556aa3.js
+│           ├── 3.eb08efa7ba589d556aa3.js.map
+│           ├── 4.1a1f6bdc2889dd07e25a.js
+│           ├── 4.1a1f6bdc2889dd07e25a.js.map
+│           ├── 5.0fb7785592559d828d5a.js
+│           ├── 5.0fb7785592559d828d5a.js.map
+│           ├── 6.cda89917f677fc954adf.js
+│           ├── 6.cda89917f677fc954adf.js.map
+│           ├── 7.0ea5e6c9603ee5a13a8b.js
+│           ├── 7.0ea5e6c9603ee5a13a8b.js.map
+│           ├── 8.21e93d2324adbbe0570f.js
+│           ├── 8.21e93d2324adbbe0570f.js.map
+│           ├── 9.6dbe4241e8dbdd3f3fb0.js
+│           ├── 9.6dbe4241e8dbdd3f3fb0.js.map
+│           ├── app.20ce4638d940807d06c7.js
+│           ├── app.20ce4638d940807d06c7.js.map
+│           ├── manifest.db9287463f0d76332b06.js
+│           ├── manifest.db9287463f0d76332b06.js.map
+│           ├── vendor.e0afbaf759457482f8d2.js
+│           └── vendor.e0afbaf759457482f8d2.js.map
+├── django_api
+│   ├── admin.py
+│   ├── ane
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── __pycache__
+│   │   │   ├── __init__.cpython-38.pyc
+│   │   │   ├── models.cpython-38.pyc
+│   │   │   ├── urls.cpython-38.pyc
+│   │   │   └── views.cpython-38.pyc
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── apps.py
+│   ├── cas
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── __pycache__
+│   │   │   ├── __init__.cpython-38.pyc
+│   │   │   ├── models.cpython-38.pyc
+│   │   │   ├── urls.cpython-38.pyc
+│   │   │   └── views.cpython-38.pyc
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── __init__.py
+│   ├── migrations
+│   │   ├── 0001_initial.py
+│   │   ├── 0002_auto_20210514_1736.py
+│   │   ├── 0003_alter_user_table.py
+│   │   ├── 0004_rename_ispicth_user_ispitch.py
+│   │   ├── 0005_cas.py
+│   │   ├── 0006_alter_cas_table.py
+│   │   ├── 0007_auto_20210514_2155.py
+│   │   ├── 0008_alter_cas_role.py
+│   │   ├── 0009_ane.py
+│   │   ├── 0010_pitch_vol.py
+│   │   ├── 0011_auto_20210517_0450.py
+│   │   ├── 0012_auto_20210517_0801.py
+│   │   ├── 0013_user_pays.py
+│   │   ├── 0014_auto_20210518_0331.py
+│   │   ├── 0015_auto_20210518_0337.py
+│   │   ├── 0016_auto_20210518_0342.py
+│   │   ├── 0017_auto_20210518_0819.py
+│   │   ├── 0018_auto_20210518_1115.py
+│   │   ├── 0019_vol_ispart.py
+│   │   ├── 0020_auto_20210518_1332.py
+│   │   ├── 0021_auto_20210518_1434.py
+│   │   ├── 0022_auto_20210518_1532.py
+│   │   ├── 0023_remove_ane_stop_time.py
+│   │   ├── 0024_vol_isfreeze.py
+│   │   ├── 0025_pitch_isfreeze.py
+│   │   ├── __init__.py
+│   │   └── __pycache__
+│   │       ├── 0001_initial.cpython-38.pyc
+│   │       ├── 0002_auto_20210514_1736.cpython-38.pyc
+│   │       ├── 0003_alter_user_table.cpython-38.pyc
+│   │       ├── 0004_rename_ispicth_user_ispitch.cpython-38.pyc
+│   │       ├── 0005_cas.cpython-38.pyc
+│   │       ├── 0006_alter_cas_table.cpython-38.pyc
+│   │       ├── 0007_auto_20210514_2155.cpython-38.pyc
+│   │       ├── 0008_alter_cas_role.cpython-38.pyc
+│   │       ├── 0009_ane.cpython-38.pyc
+│   │       ├── 0010_pitch_vol.cpython-38.pyc
+│   │       ├── 0011_auto_20210517_0450.cpython-38.pyc
+│   │       ├── 0012_auto_20210517_0801.cpython-38.pyc
+│   │       ├── 0013_user_pays.cpython-38.pyc
+│   │       ├── 0014_auto_20210518_0331.cpython-38.pyc
+│   │       ├── 0015_auto_20210518_0337.cpython-38.pyc
+│   │       ├── 0016_auto_20210518_0342.cpython-38.pyc
+│   │       ├── 0017_auto_20210518_0819.cpython-38.pyc
+│   │       ├── 0018_auto_20210518_1115.cpython-38.pyc
+│   │       ├── 0019_vol_ispart.cpython-38.pyc
+│   │       ├── 0020_auto_20210518_1332.cpython-38.pyc
+│   │       ├── 0021_auto_20210518_1434.cpython-38.pyc
+│   │       ├── 0022_auto_20210518_1532.cpython-38.pyc
+│   │       ├── 0023_remove_ane_stop_time.cpython-38.pyc
+│   │       ├── 0024_vol_isfreeze.cpython-38.pyc
+│   │       ├── 0025_pitch_isfreeze.cpython-38.pyc
+│   │       └── __init__.cpython-38.pyc
+│   ├── models.py
+│   ├── pitch
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── __pycache__
+│   │   │   ├── __init__.cpython-38.pyc
+│   │   │   ├── models.cpython-38.pyc
+│   │   │   ├── urls.cpython-38.pyc
+│   │   │   └── views.cpython-38.pyc
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── __pycache__
+│   │   ├── admin.cpython-38.pyc
+│   │   ├── apps.cpython-38.pyc
+│   │   ├── __init__.cpython-38.pyc
+│   │   ├── models.cpython-38.pyc
+│   │   ├── urls.cpython-38.pyc
+│   │   └── views.cpython-38.pyc
+│   ├── urls.py
+│   ├── user
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── __init__.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── __pycache__
+│   │   │   ├── __init__.cpython-38.pyc
+│   │   │   ├── models.cpython-38.pyc
+│   │   │   ├── urls.cpython-38.pyc
+│   │   │   └── views.cpython-38.pyc
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── views.py
+│   └── vol
+│       ├── admin.py
+│       ├── apps.py
+│       ├── __init__.py
+│       ├── migrations
+│       │   └── __init__.py
+│       ├── models.py
+│       ├── __pycache__
+│       │   ├── __init__.cpython-38.pyc
+│       │   ├── models.cpython-38.pyc
+│       │   ├── urls.cpython-38.pyc
+│       │   └── views.cpython-38.pyc
+│       ├── tests.py
+│       ├── urls.py
+│       └── views.py
+├── django_vue_template
+│   ├── asgi.py
+│   ├── __init__.py
+│   ├── __pycache__
+│   │   ├── __init__.cpython-38.pyc
+│   │   ├── settings.cpython-38.pyc
+│   │   ├── urls.cpython-38.pyc
+│   │   └── wsgi.cpython-38.pyc
+│   ├── settings.py
+│   ├── urls.py
+│   └── wsgi.py
+├── index.html
+├── manage.py
+├── package.json
+├── package-lock.json
+├── Procfile
+├── __pycache__
+│   └── local_settings.cpython-38.pyc
+├── README.md
+├── requirements.txt
+├── src
+│   ├── api
+│   │   ├── ane.js
+│   │   ├── article.js
+│   │   ├── axios.js
+│   │   ├── pitch.js
+│   │   ├── user.js
+│   │   └── vol.js
+│   ├── App.vue
+│   ├── assets
+│   │   ├── css
+│   │   ├── imgs
+│   │   │   ├── 401_images
+│   │   │   │   └── 401.gif
+│   │   │   └── 404_images
+│   │   │       ├── 404_cloud.png
+│   │   │       └── 404.png
+│   │   ├── logo.png
+│   │   ├── structure.md
+│   │   └── svg
+│   ├── components
+│   │   ├── Breadcrumb
+│   │   │   └── index.vue
+│   │   ├── ErrorLog
+│   │   │   └── index.vue
+│   │   ├── GithubCorner
+│   │   │   └── index.vue
+│   │   ├── Hamburger
+│   │   │   └── index.vue
+│   │   ├── HeaderSearch
+│   │   │   └── index.vue
+│   │   ├── Pagination
+│   │   │   └── index.vue
+│   │   ├── PanThumb
+│   │   │   └── index.vue
+│   │   ├── RightPanel
+│   │   │   └── index.vue
+│   │   ├── Screenfull
+│   │   │   └── index.vue
+│   │   ├── Share
+│   │   │   └── DropdownMenu.vue
+│   │   ├── SizeSelect
+│   │   │   └── index.vue
+│   │   ├── SvgIcon
+│   │   │   └── index.vue
+│   │   ├── TextHoverEffect
+│   │   │   └── Mallki.vue
+│   │   └── ThemePicker
+│   │       └── index.vue
+│   ├── directive
+│   │   ├── clipboard
+│   │   │   ├── clipboard.js
+│   │   │   └── index.js
+│   │   ├── el-drag-dialog
+│   │   │   ├── drag.js
+│   │   │   └── index.js
+│   │   ├── el-table
+│   │   │   ├── adaptive.js
+│   │   │   └── index.js
+│   │   ├── permission
+│   │   │   ├── index.js
+│   │   │   └── permission.js
+│   │   ├── sticky.js
+│   │   └── waves
+│   │       ├── index.js
+│   │       ├── waves.css
+│   │       └── waves.js
+│   ├── icons
+│   │   ├── index.js
+│   │   ├── svg
+│   │   │   ├── 404.svg
+│   │   │   ├── bug.svg
+│   │   │   ├── chart.svg
+│   │   │   ├── clipboard.svg
+│   │   │   ├── component.svg
+│   │   │   ├── dashboard.svg
+│   │   │   ├── documentation.svg
+│   │   │   ├── drag.svg
+│   │   │   ├── edit.svg
+│   │   │   ├── education.svg
+│   │   │   ├── email.svg
+│   │   │   ├── example.svg
+│   │   │   ├── excel.svg
+│   │   │   ├── exit-fullscreen.svg
+│   │   │   ├── eye-open.svg
+│   │   │   ├── eye.svg
+│   │   │   ├── form.svg
+│   │   │   ├── fullscreen.svg
+│   │   │   ├── guide.svg
+│   │   │   ├── icon.svg
+│   │   │   ├── international.svg
+│   │   │   ├── language.svg
+│   │   │   ├── link.svg
+│   │   │   ├── list.svg
+│   │   │   ├── lock.svg
+│   │   │   ├── message.svg
+│   │   │   ├── money.svg
+│   │   │   ├── nested.svg
+│   │   │   ├── password.svg
+│   │   │   ├── pdf.svg
+│   │   │   ├── peoples.svg
+│   │   │   ├── people.svg
+│   │   │   ├── qq.svg
+│   │   │   ├── search.svg
+│   │   │   ├── shopping.svg
+│   │   │   ├── size.svg
+│   │   │   ├── skill.svg
+│   │   │   ├── star.svg
+│   │   │   ├── table.svg
+│   │   │   ├── tab.svg
+│   │   │   ├── theme.svg
+│   │   │   ├── tree.svg
+│   │   │   ├── tree-table.svg
+│   │   │   ├── user.svg
+│   │   │   ├── wechat.svg
+│   │   │   └── zip.svg
+│   │   └── svgo.yml
+│   ├── layout
+│   │   ├── components
+│   │   │   ├── AppMain.vue
+│   │   │   ├── index.js
+│   │   │   ├── Navbar.vue
+│   │   │   ├── Settings
+│   │   │   │   └── index.vue
+│   │   │   ├── Sidebar
+│   │   │   │   ├── FixiOSBug.js
+│   │   │   │   ├── index.vue
+│   │   │   │   ├── Item.vue
+│   │   │   │   ├── Link.vue
+│   │   │   │   ├── Logo.vue
+│   │   │   │   └── SidebarItem.vue
+│   │   │   └── TagsView
+│   │   │       ├── index.vue
+│   │   │       └── ScrollPane.vue
+│   │   ├── index.vue
+│   │   └── mixin
+│   │       └── ResizeHandler.js
+│   ├── main.js
+│   ├── permission.js
+│   ├── plugins
+│   │   ├── directives.js
+│   │   ├── filters.js
+│   │   └── index.js
+│   ├── router
+│   │   ├── index.js
+│   │   └── modules
+│   │       └── table.js
+│   ├── settings.js
+│   ├── store
+│   │   ├── getters.js
+│   │   ├── index.js
+│   │   └── modules
+│   │       ├── app.js
+│   │       ├── errorLog.js
+│   │       ├── permission.js
+│   │       ├── settings.js
+│   │       ├── tagsView.js
+│   │       └── user.js
+│   ├── styles
+│   │   ├── btn.scss
+│   │   ├── element-ui.scss
+│   │   ├── element-variables.scss
+│   │   ├── index.scss
+│   │   ├── mixin.scss
+│   │   ├── sidebar.scss
+│   │   ├── transition.scss
+│   │   └── variables.scss
+│   ├── utils
+│   │   ├── clipboard.js
+│   │   ├── config.js
+│   │   ├── index.js
+│   │   ├── request.js
+│   │   ├── scroll-to.js
+│   │   └── validate.js
+│   ├── vendor
+│   │   ├── Export2Excel.js
+│   │   └── Export2Zip.js
+│   └── views
+│       ├── dashboard
+│       │   ├── admin
+│       │   │   ├── components
+│       │   │   │   ├── BarChart.vue
+│       │   │   │   ├── BoxCard.vue
+│       │   │   │   ├── LineChart.vue
+│       │   │   │   ├── mixins
+│       │   │   │   │   └── resize.js
+│       │   │   │   ├── PanelGroup.vue
+│       │   │   │   ├── PieChart.vue
+│       │   │   │   ├── RaddarChart.vue
+│       │   │   │   └── TodoList
+│       │   │   │       ├── index.scss
+│       │   │   │       ├── index.vue
+│       │   │   │       └── Todo.vue
+│       │   │   └── index.vue
+│       │   ├── editor
+│       │   │   └── index.vue
+│       │   └── index.vue
+│       ├── error-page
+│       │   ├── 401.vue
+│       │   └── 404.vue
+│       ├── icons
+│       │   ├── element-icons.js
+│       │   ├── index.vue
+│       │   └── svg-icons.js
+│       ├── login
+│       │   └── index.vue
+│       ├── profile
+│       │   ├── components
+│       │   │   ├── Account.vue
+│       │   │   ├── Activity.vue
+│       │   │   ├── Timeline.vue
+│       │   │   └── UserCard.vue
+│       │   └── index.vue
+│       ├── table
+│       │   ├── aneTable.vue
+│       │   ├── pitchTable.vue
+│       │   └── volTable.vue
+│       └── user-table
+│           └── index.vue
+├── static
+│   └── favicon.ico
+├── staticfiles
+├── test
+│   ├── e2e
+│   │   ├── custom-assertions
+│   │   │   └── elementCount.js
+│   │   ├── nightwatch.conf.js
+│   │   ├── runner.js
+│   │   └── specs
+│   │       └── test.js
+│   └── unit
+│       ├── jest.conf.js
+│       ├── setup.js
+│       └── specs
+│           └── HelloWorld.spec.js
+├── TestModel
+│   ├── admin.py
+│   ├── apps.py
+│   ├── __init__.py
+│   ├── migrations
+│   │   ├── 0001_initial.py
+│   │   ├── __init__.py
+│   │   └── __pycache__
+│   │       ├── 0001_initial.cpython-38.pyc
+│   │       └── __init__.cpython-38.pyc
+│   ├── models.py
+│   ├── __pycache__
+│   │   ├── admin.cpython-38.pyc
+│   │   ├── apps.cpython-38.pyc
+│   │   ├── __init__.cpython-38.pyc
+│   │   ├── models.cpython-38.pyc
+│   │   ├── urls.cpython-38.pyc
+│   │   └── views.cpython-38.pyc
+│   ├── tests.py
+│   ├── urls.py
+│   └── views.py
+├── TODO
+├── tree.text
+├── vue.config.js
+├── worldWeek.db
+└── worldWeek.db.sqbpro
+
+101 directories, 381 files

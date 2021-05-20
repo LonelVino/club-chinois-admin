@@ -3,7 +3,7 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
 
       <div class="title-container">
-        <h1 class="title">World Week</h1>
+        <h1 class="title">Club Chinois Admin</h1>
       </div>
       <div class="title-container">
         <h1 class="sub-title" v-if="isLogin">Login</h1>
