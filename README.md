@@ -2,7 +2,7 @@
 
 [![TeamCity CodeBetter](https://img.shields.io/teamcity/codebetter/bt428.svg)![npm](https://img.shields.io/npm/dw/localeval.svg)]() [![npm](https://img.shields.io/npm/v/npm.svg)]() [![Chrome Web Store](https://img.shields.io/chrome-web-store/stars/nimelepbpejjlbmoobocpfnjhihnpked.svg)]()
 
-This project is the administration of Club Chinois, it’s mainly the reqyest time, ..
+This project is the administration of Club Chinois
 
 ## Features 特性
 
@@ -18,11 +18,11 @@ This project is the administration of Club Chinois, it’s mainly the reqyest ti
 
 ### 主界面
 
-![image-20210520233813212](/home/lonelvino/.config/Typora/typora-user-images/image-20210520233813212.png)
+![image-20210520233813212](https://cdn.jsdelivr.net/gh/LonelVino/CDN@1.4.5/ClubChinois/club-chinois-admin-dashboard.png)
 
 ### 登录界面
 
-![image-20210521001400722](/home/lonelvino/.config/Typora/typora-user-images/image-20210521001400722.png)
+![image-20210521001400722](https://cdn.jsdelivr.net/gh/LonelVino/CDN@1.4.5/ClubChinois/club-chinois-admin-login.png)
 
 ## Structure of The projects
 
