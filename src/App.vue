@@ -54,6 +54,16 @@ export default {
 </script>
 
 <style>
+html,
+body{
+-webkit-filter: grayscale(100%) !important; /* webkit */
+-moz-filter: grayscale(100%) !important; /*firefox*/
+-ms-filter: grayscale(100%) !important; /*ie9*/
+-o-filter: grayscale(100%) !important; /*opera*/
+filter: grayscale(100%) !important;
+filter:progid:DXImageTransform.Microsoft.BasicImage(grayscale=1) !important; 
+filter:gray !important; /*ie9- */
+}
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
