@@ -98,46 +98,58 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/user-table',
+    path: '/histories',
     component: Layout,
     children: [
       {
-        path: '/user-table',
-        component: () => import('@/views/user-table/index'),
-        name: 'UserTable',
-        meta: { title: 'UserTable', icon: 'dashboard', affix: true }
+        path: '/histories',
+        component: () => import('@/views/histories/index'),
+        name: 'History',
+        meta: { title: 'History', icon: 'dashboard', affix: true }
       }
     ]
   },
-  {
-    path: '/table',
-    component: Layout,
-    redirect: '/table/pitch-table',
-    name: 'Table',
-    meta: {
-      title: 'Table',
-      icon: 'table'
-    }, children: [
-      {
-        path: 'pitch-table',
-        component: () => import('@/views/table/pitchTable'),
-        name: 'PitchTable',
-        meta: { title: 'Pitch' }
-      },
-      {
-        path: 'ane-table',
-        component: () => import('@/views/table/aneTable'),
-        name: 'AneTable',
-        meta: { title: 'Ane Rouge' }
-      },
-      {
-        path: 'vol-table',
-        component: () => import('@/views/table/volTable'),
-        name: 'VolantTable',
-        meta: { title: 'Volant Volant' }
-      }
-    ]
-  }
+  // {
+  //   path: '/user-table',
+  //   component: Layout,
+  //   children: [
+  //     {
+  //       path: '/user-table',
+  //       component: () => import('@/views/user-table/index'),
+  //       name: 'UserTable',
+  //       meta: { title: 'UserTable', icon: 'dashboard', affix: true }
+  //     }
+  //   ]
+  // },
+  // {
+  //   path: '/table',
+  //   component: Layout,
+  //   redirect: '/table/pitch-table',
+  //   name: 'Table',
+  //   meta: {
+  //     title: 'Table',
+  //     icon: 'table'
+  //   }, children: [
+  //     {
+  //       path: 'pitch-table',
+  //       component: () => import('@/views/table/pitchTable'),
+  //       name: 'PitchTable',
+  //       meta: { title: 'Pitch' }
+  //     },
+  //     {
+  //       path: 'ane-table',
+  //       component: () => import('@/views/table/aneTable'),
+  //       name: 'AneTable',
+  //       meta: { title: 'Ane Rouge' }
+  //     },
+  //     {
+  //       path: 'vol-table',
+  //       component: () => import('@/views/table/volTable'),
+  //       name: 'VolantTable',
+  //       meta: { title: 'Volant Volant' }
+  //     }
+  //   ]
+  // }
 ]
 
 export const asyncRoutes = [
