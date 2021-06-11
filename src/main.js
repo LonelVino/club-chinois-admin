@@ -12,6 +12,8 @@ import enLang from 'element-ui/lib/locale/lang/en'// 如果使用中文语言包
 
 import '@/styles/index.scss' // global css
 
+import SequentialEntrance from 'vue-sequential-entrance'
+import 'vue-sequential-entrance/vue-sequential-entrance.css'
 
 import App from './App'
 import store from './store'
@@ -25,6 +27,7 @@ Vue.use(Element, {
   size: Cookies.get('size') || 'medium', // set element-ui default size
   locale: enLang // 如果使用中文，无需设置，请删除
 })
+Vue.use(SequentialEntrance);
 
 /* eslint-disable no-new */
 new Vue({

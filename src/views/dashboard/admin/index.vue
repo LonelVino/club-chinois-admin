@@ -3,7 +3,7 @@
     <github-corner class="github-corner" />
     <div class="files">
       <div class="upload">
-        <el-upload
+        <el-upload data-step="1" data-intro="Upload Raw Data"
         class="upload-demo"
         drag
         action="https://jsonplaceholder.typicode.com/posts/"
@@ -19,22 +19,39 @@
       </div>
       <div class="actions">
         <div class="buttons">
-          <el-button class="upload-btn" type="primary" @click="Predict()">Predict</el-button>
-          <el-button class="upload-btn" type="warning" @click="StopPredict()">Stop</el-button>
+          <el-button data-step="2" data-intro="Click to Predict" class="upload-btn" type="primary" @click="Predict()">Predict</el-button>
+          <el-button data-step="3" data-intro="You can stop it" class="upload-btn" type="warning" @click="StopPredict()">Stop</el-button>
         </div>
         <div class="download">
-        <el-card shadow="hover">
-          <span>sample.csv</span>
-          <el-button type='info' @click="DonwloadFile()">Download</el-button>
-        </el-card>
-      </div>
+          <el-card shadow="hover" data-step="4" data-intro="There is a sample file" >
+            <span class="btn-tip">sample.csv</span>
+            <el-button type='info' @click="DonwloadFile()">Download</el-button>
+          </el-card>
+        </div>
       </div>
     </div>
 
-    <div class="result" v-if="hasResult">
+    <div class="scaleProgress">
+        <el-progress :text-inside="true" :stroke-width="18" :percentage="progressNum"></el-progress>
+    </div>
+
+    
+    <div class="result" v-if="hasResult" v-loading="resultLoading">
+      <div class="filter-container">
+        <el-input style="width: 200px;" class="filter-item" />
+
+        <el-button v-waves class="filter-item" type="primary" icon="el-icon-search">
+          Search
+        </el-button>
+        <el-button v-waves class="filter-item" type="primary" icon="el-icon-refresh-right">
+          Reset
+        </el-button>
+        <el-button v-waves :loading="downloadLoading" class="filter-item" type="primary" icon="el-icon-download" @click="handleDownload">
+          Export
+        </el-button>
+      </div>
       <el-table
         ref="multipleTable"
-        :key="tableKey"
         v-loading="listLoading"
         :data="table_list"
         border
@@ -47,7 +64,7 @@
           <span>{{ row.id }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="MAC CODE" align="center" width="80">
+      <el-table-column label="MAC CODE" align="center" width="150">
         <template slot-scope="{row}">
           <span>{{ row.mac_code}}</span>
         </template>
@@ -73,9 +90,9 @@
         </template>
       </el-table-column>
       </el-table>
+    
 
-
-      <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+      <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px; margin-top: 2vw;">
         <line-chart :chart-data="lineChartData" />
       </el-row>
 
@@ -110,7 +127,12 @@ import BarChart from './components/BarChart'
 import TodoList from './components/TodoList'
 import BoxCard from './components/BoxCard'
 
+import waves from '@/directive/waves' // waves directive
+
 import axios from 'axios'
+
+import introJs from 'intro.js'
+import 'intro.js/introjs.css'
 
 var lineChartData = {
   newVisitis: {
@@ -155,14 +177,55 @@ export default {
     return {
       fileList: [],
       lineChartData: lineChartData.newVisitis,
-      hasResult: false
+      hasResult: false,
+      resultLoading: false,
+
+      downloadLoading: false,
+
+      progressNum: 0,
+      startTimer: '',
+      endTimer: ''
+    }
+  },
+  props: {
+    progressStatus: {
+      type: Boolean,
+      default() {
+        return false
+      }
+    }
+  },
+  watch: {
+    progressNum: function () {
+      if (this.progressNum == 99) {
+        this.endProgress()
+      }
     }
   },
   computed: {
     listLoading() {return false},
     table_list() {return ex_list},
   },
+  mounted() {
+    this.guide()
+  },
   methods: {
+    guide() {
+        introJs()
+        .setOptions({
+            nextLabel: 'Next',  // 下一个按钮文字
+            prevLabel: 'Previous',  // 上一个按钮文字
+            skipLabel: 'Skip',    // 跳过按钮文字
+            doneLabel: 'Start',// 完成按钮文字
+            hidePrev: true,       // 在第一步中是否隐藏上一个按钮
+            hideNext: true,       // 在最后一步中是否隐藏下一个按钮
+            exitOnOverlayClick: false,  // 点击叠加层时是否退出介绍
+            showStepNumbers: false,     // 是否显示红色圆圈的步骤编号
+            disableInteraction: true,   // 是否禁用与突出显示的框内的元素的交互，就是禁止点击
+            showBullets: false          // 是否显示面板指示点
+        }).start()
+    },
+
     DonwloadFile() {
       axios({
         url: 'https://people.sc.fsu.edu/~jburkardt/data/csv/addresses.csv',
@@ -180,9 +243,49 @@ export default {
     });
     },
 
+    handleDownload() {
+      this.downloadLoading = true
+      import('@/vendor/Export2Excel').then(excel => {
+        const tHeader = ['ID', 'MAC CODE', 'Pitch Angle', 'Rotor Speed', 'Hub Temperature', 'TARGET']
+        const filterVal = ['id', 'mac_code', 'pch_ang', 'rrt_v', 'hub_t', 'target']
+        const data = this.formatJson(filterVal)
+        excel.export_json_to_excel({
+          header: tHeader,
+          data,
+          filename: 'PredictResult'
+        })
+        this.downloadLoading = false
+      })
+    },
+
     Predict() {
+      this.startProgress()
+    },
+    StopPredict() {
+      console.log(this.progressNum)
+    },
+    startProgress () {
+      this.startTimer = setInterval(() => {
+        this.progressNum ++
+        if (this.progressNum > 98) {
+            clearInterval(this.startTimer)
+        }
+      }, 100); 
+    },
+    endProgress () {
+      clearInterval(this.startTimer)
+      this.endTimer = setInterval(() => {
+        this.progressNum ++
+        if (this.progressNum > 99) {
+          clearInterval(this.endTimer)
+          this.finishProgress()
+        }
+      }, 10);
+    },
+    finishProgress () {
       this.hasResult = true
       console.log(this.hasResult)
+      this.$emit('finishProgress', false)
     },
 
     submitUpload() {
@@ -200,7 +303,18 @@ export default {
 
     handleSetLineChartData(type) {
       this.lineChartData = lineChartData[type]
-    }
+    },
+
+    formatJson(filterVal) {
+      return this.table_list.map(v => filterVal.map(j => {
+        if (j === 'timestamp') {
+          return parseTime(v[j])
+        } else {
+          return v[j]
+        }
+      }))
+    },
+    
   }
 }
 </script>
@@ -241,7 +355,19 @@ export default {
           transform: scale(1.2);
         }
       }
+      .btn-tip {
+        font-weight: bold;
+        font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        margin: 0 0.5vw;
+      }
     }
+  }
+
+  .result {
+    margin-top: 2vw;
+    display: flex;
+    flex-direction: column;
+    justify-content:flex-start;
   }
 
   .chart-wrapper {
