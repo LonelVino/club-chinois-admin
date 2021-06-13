@@ -72,13 +72,8 @@ export const constantRoutes = [
   // },
   {
     path: '/',
-    redirect: '/welcome',
-    component: () => import('@/views/welcome/index'),
-  },
-  {
-    path: '/welcome',
-    name:'welcome',
-    component: () => import('@/views/welcome/index'),
+    redirect: '/dashboard',
+    component: () => import('@/views/dashboard/index'),
   },
   {
     path: '/dashboard',
@@ -109,29 +104,29 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/histories',
+    path: '/user-table',
     component: Layout,
     children: [
       {
-        path: '/histories',
-        component: () => import('@/views/histories/index'),
-        name: 'History',
-        meta: { title: 'History', icon: 'dashboard', affix: true }
+        path: '/user-table',
+        component: () => import('@/views/user-table/index'),
+        name: 'UserTable',
+        meta: { title: 'UserTable', icon: 'dashboard', affix: true }
       }
     ]
   },
-  // {
-  //   path: '/user-table',
-  //   component: Layout,
-  //   children: [
-  //     {
-  //       path: '/user-table',
-  //       component: () => import('@/views/user-table/index'),
-  //       name: 'UserTable',
-  //       meta: { title: 'UserTable', icon: 'dashboard', affix: true }
-  //     }
-  //   ]
-  // },
+  {
+    path: '/material',
+    component: Layout,
+    children: [
+      {
+        path: '/material',
+        component: () => import('@/views/material/index'),
+        name: 'Material',
+        meta: { title: 'Materials', icon: 'material', affix: true }
+      }
+    ]
+  },
   // {
   //   path: '/table',
   //   component: Layout,

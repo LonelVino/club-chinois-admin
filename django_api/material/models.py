@@ -34,7 +34,6 @@ class Product(models.Model):
     quantity = models.IntegerField(max_length=100, default=0,null=True)
     description = models.TextField(blank=True, default='', null=True)
     price = models.FloatField()
-    dt_info = models.CharField(max_length=200,default="None")
     status = models.IntegerField(max_length=100, default=0, null=True) # 0: delivering; 1: received
     created = models.DateTimeField(auto_now_add=True)
     updated = models.DateTimeField(auto_now=True)

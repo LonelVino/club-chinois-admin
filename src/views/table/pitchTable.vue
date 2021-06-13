@@ -231,7 +231,7 @@
 </template>
 
 <script>
-import {getScore, getAllScores, addScore, updateScore, deleteScore} from '@/api/pitch'
+import {getScore, getAllScores, addScore, updateScore, deleteScore} from '@/api/world_week/pitch'
 import waves from '@/directive/waves' // waves directive
 import { parseTime } from '@/utils'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination

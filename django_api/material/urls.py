@@ -2,13 +2,13 @@ from django.conf.urls import url, include
 from . import views
 
 
-app_name='shop'
+app_name='material'
 urlpatterns = [
     url('category', views.one_category, name='product_list_by_category'),   # category?id
     url('all_categories', views.categories, name='allCatagories'),     
-    url('product', views.one_product, name='product_detail'), # product?id
-    url('all_prods', views.products, name='allProducts'), 
-    url('prods_by_cat', views.getProductsByCat, name='allProductsByCat'), 
+    url('material', views.one_material, name='material_detail'), # product?id
+    url('all_mats', views.materials, name='allMaterials'), 
+    url('mats_by_cat', views.getMaterialsByCat, name='allMaterialsByCat'), 
     # url(r'^$',views.viarezo_check,name='viarezo_check'),
     # url('secret', views.secret_page, name='secret'),
     ]

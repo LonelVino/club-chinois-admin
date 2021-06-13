@@ -5,7 +5,7 @@ from django_api.material.models import Category
 
 
 # Create your views here.
-def one_product(request):   # Select the product according to the id
+def one_material(request):   # Select the material according to the id
     if request.method == 'GET':
         id = request.GET.get('id', default=0)
         if id != 0:
@@ -25,42 +25,42 @@ def one_product(request):   # Select the product according to the id
             'code': 200,
             'msg': 'Get information successfully',
             'data': {
-                'prod_info': info
+                'info': info
             }
         })
 
-def products(request):
+def materials(request):
     if request.method == 'GET':
-        all_products = list(Product.objects.all().values())
-        if len(all_products) >= 0:
+        all_materials = list(Product.objects.all().values())
+        if len(all_materials) >= 0:
             return JsonResponse({
                 'code': 200,
-                'msg': 'get all products successfully',
+                'msg': 'get all materials successfully',
                 'data': {
-                    'total': len(all_products),
-                    'prod_infos': all_products
+                    'total': len(all_materials),
+                    'prod_infos': all_materials
                 }
             })
         else:
             return JsonResponse({'code': 200, 'msg': 'Empty table!'})
 
-def getProductsByCat(request):
+def getMaterialsByCat(request):
     if request.method == 'GET':
         cat_id = request.GET.get('id', default=0)
-        products = list(Product.objects.filter(category_id = cat_id).values())
-        if len(products) >= 0:
+        materials = list(Product.objects.filter(category_id = cat_id).values())
+        if len(materials) >= 0:
             return JsonResponse({
                 'code': 200,
-                'msg': 'get all products successfully',
+                'msg': 'get all materials successfully',
                 'data': {
-                    'total': len(products),
-                    'prod_infos': products
+                    'total': len(materials),
+                    'info': materials
                 }
             })
         else:
             return JsonResponse({'code': 200, 'msg': 'Empty table!'})
 
-def one_category(request):  # Select the product according to the id
+def one_category(request):  # Select the material according to the id
     if request.method == 'GET':
         id = request.GET.get('id', default=0)
         if id != 0:
@@ -87,7 +87,7 @@ def categories(request):
         if len(all_categories) >= 0:
             return JsonResponse({
                 'code': 200,
-                'msg': 'get all products successfully',
+                'msg': 'get all materials successfully',
                 'data': {
                     'total': len(all_categories),
                     'cat_infos': all_categories
@@ -111,14 +111,14 @@ def add_cat(request):
         })
 
 keys = ['category' , 'image', 'quantity', 'description' , 'price' , 'dt_info', 'status', 'created' , 'updated' ]
-def add_prod(request):
+def add_material(request):
     if request.method == 'POST':
         received_json_data = json.loads(request.body)
         rec = received_json_data
-        cat_1 = Product(name=rec['name'], category=rec['category'], status = rec['status'], 
+        mat_1 = Product(name=rec['name'], category=rec['category'], status = rec['status'], 
             image=rec['image'], quantity= rec['quantity'], price = rec['price'],
             dt_info = rec['dt_info'], created=rec['created'], updated=rec['updated'])
-        cat_1.save()
+        mat_1.save()
         return JsonResponse({
             'code': 200,
             'msg': 'Add Successfully!',
@@ -131,7 +131,7 @@ def add_prod(request):
 def update_cat(request):
     pass
 
-def update_prod(request):
+def update_material(request):
     pass
 
 def del_cat(request):

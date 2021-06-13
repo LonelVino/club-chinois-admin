@@ -13,6 +13,11 @@ const getters = {
   isAne: state => state.user.isAne,
   isVol: state => state.user.isVol,
   isPitch: state => state.user.isPitch,
+
+  materials: state => state.material.materials,
+  materialByCat: state => state.material.materialByCat,
+  categories: state => state.material.categories,
+  mats_loading: state => state.material.mats_loading,
   
   permission_routes: state => state.permission.routes,
   errorLogs: state => state.errorLog.logs
