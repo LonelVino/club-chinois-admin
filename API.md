@@ -28,13 +28,13 @@ https://world-week-test.herokuapp.com/django_api  生产环境
 如无特别说明，`GET` 请求参数需要放到 Url Query String 中：
 
 ```awk
-GET https://world-week-test.herokuapp.com/django_api/users?pagesize=20
+GET https://cs-cc-admin.herokuapp.com/django_api/users?pagesize=20
 ```
 
 `POST/PUT/PATCH` 请求参数建议使用 JSON 格式将参数放到请求体中：
 
 ```json
-PUT https://world-week-test.herokuapp.com/django_api/users/1
+PUT https://cs-cc-admin.herokuapp.com/django_api/users/1
 Content-Type: application/json
 {
   "id": 1,

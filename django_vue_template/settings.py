@@ -110,9 +110,11 @@ CORS_ORIGIN_WHITELIST = (
     'http://localhost:8000', 
     'https://127.0.0.1:8000',   # Backend    
     'http://world-week-test.herokuapp.com',
+    'https://world-week-test.herokuapp.com',
     'http://club-chinois.herokuapp.com',
     'https://club-chinois.herokuapp.com',
-    'https://world-week-test.herokuapp.com',
+    'http://cs-cc-admin.herokuapp.com',
+    'https://cs-cc-admin.herokuapp.com',
 )
 
 WSGI_APPLICATION = 'django_vue_template.wsgi.application'
