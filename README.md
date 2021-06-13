@@ -34,7 +34,7 @@ This project is the administration of Club Chinois
 ├── dist
 ├── django_api
 │   ├── admin.py
-│   ├── ane
+│   ├── app_1
 │   │   ├── admin.py
 │   │   ├── apps.py
 │   │   ├── migrations
@@ -48,14 +48,11 @@ This project is the administration of Club Chinois
 │   ├── __init__.py
 │   ├── migrations
 │   ├── models.py
-│   ├── pitch
-│   │   (same with the structure of 'ane')
 │   ├── urls.py
 │   ├── user
 │   │   (same with the structure of 'ane')
 │   ├── views.py
-│   └── vol
-│   │   (same with the structure of 'ane')
+│   └── app_3
 ├── django_vue_template
 │   ├── asgi.py
 │   ├── __init__.py
@@ -71,7 +68,7 @@ This project is the administration of Club Chinois
 ├── requirements.txt
 ├── src
 │   ├── api
-│   │   ├── ane.js
+│   │   ├── material.js
 │   │   ├── article.js
 │   │   ├── axios.js
 │   │  ............

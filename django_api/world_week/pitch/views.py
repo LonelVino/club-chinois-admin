@@ -7,7 +7,7 @@ Organize the views of pitch
 
 import json
 from django.http import JsonResponse
-from django_api.pitch.models import Pitch
+from django_api.world_week.pitch.models import Pitch
 
 def all_scores(request):
     if request.method == 'GET':

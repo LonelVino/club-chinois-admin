@@ -6,7 +6,7 @@ Organize the views of Vol
 
 import json
 from django.http import JsonResponse
-from django_api.vol.models import Vol
+from django_api.world_week.vol.models import Vol
 
 def all_scores(request):
     if request.method == 'GET':

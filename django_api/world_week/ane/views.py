@@ -6,7 +6,7 @@ Organize the views of Ane
 
 import json
 from django.http import JsonResponse
-from django_api.ane.models import Ane
+from django_api.world_week.ane.models import Ane
 
 def all_scores(request):
     if request.method == 'GET':

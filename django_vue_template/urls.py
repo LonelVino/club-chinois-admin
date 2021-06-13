@@ -23,14 +23,15 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name='index.html')),
     path('django_api/', include('django_api.urls')),
+    path('accounts/', include('django.contrib.auth.urls')),
     path('django_api/cas/', include('django_api.cas.urls')),
     path('django_api/user/', include('django_api.user.urls')),
-    path('django_api/ane/', include('django_api.ane.urls')),
-    path('django_api/vol/', include('django_api.vol.urls')),
-    path('django_api/pitch/', include('django_api.pitch.urls')),
+    path('django_api/material/', include('django_api.material.urls')),
 
-    path('accounts/', include('django.contrib.auth.urls')),
+    # ---------------------- World Week-------------------------
+    path('django_api/ane/', include('django_api.world_week.ane.urls')),
+    path('django_api/vol/', include('django_api.world_week.vol.urls')),
+    path('django_api/pitch/', include('django_api.world_week.pitch.urls')),
 
-    path('testdb', include('TestModel.urls')),
-
+    path('testdb', include('TestModel.urls'))
 ]

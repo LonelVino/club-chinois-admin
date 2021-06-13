@@ -8,9 +8,9 @@ import json
 from django.http import JsonResponse
 from django.core.handlers.wsgi import WSGIRequest
 from django_api.user.models import User
-from django_api.vol.models import Vol
-from django_api.ane.models import Ane
-from django_api.pitch.models import Pitch
+from django_api.world_week.vol.models import Vol
+from django_api.world_week.ane.models import Ane
+from django_api.world_week.pitch.models import Pitch
 
 def all_user_names(request):
     if request.method == 'GET':
