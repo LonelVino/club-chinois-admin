@@ -1,7 +1,7 @@
 import request from '@/utils/request'
 
-var BASE_URL = '/django_api/material'
-var ADMIN_BASE_URL = '/django_api/material/admin'
+var BASE_URL = '/django_api/finance'
+var ADMIN_BASE_URL = '/django_api/finance/admin'
 
 
 export function getCat(id) {
@@ -18,23 +18,23 @@ export function getAllCats() {
   })
 }
 
-export function getMaterial(id) {
+export function getFinance(id) {
   return request({
-    url:  BASE_URL + '/material?id='+id,
+    url:  BASE_URL + '/finance?id='+id,
     method: 'get',
   })
 }
 
-export function getAllMaterials() {
+export function getAllFinances() {
   return request({
-    url: BASE_URL + '/all_mats',
+    url: BASE_URL + '/all_fins',
     method: 'get',
   })
 }
 
-export function getAllMaterialsByCat(cat_id) {
+export function getAllFinancesByCat(cat_id) {
   return request({
-    url: BASE_URL + '/mats_by_cat?id=' + cat_id,
+    url: BASE_URL + '/fins_by_cat?id=' + cat_id,
     method: 'get',
   })
 }
@@ -48,9 +48,9 @@ export function addCat(data) {
   })
 }
 
-export function addMaterial(data) {
+export function addFinance(data) {
   return request({
-    url: BASE_URL + '/add_mat',
+    url: BASE_URL + '/add_fin',
     method: 'post',
     data
   })
@@ -64,17 +64,17 @@ export function updateCat(data) {
   })
 }
 
-export function updateMaterial(data) {
+export function updateFinance(data) {
   return request({
-    url: BASE_URL + '/update_mat',
+    url: BASE_URL + '/update_fin',
     method: 'put',
     data
   })
 }
 
-export function updateMaterialQuantity(data) {
+export function updateFinancePrice(data) {
   return request({
-    url: BASE_URL + '/update_quantity',
+    url: BASE_URL + '/update_price',
     method: 'put',
     data
   })
@@ -87,9 +87,9 @@ export function deleteCat(id) {
   })
 }
 
-export function deleteMaterial(id) {
+export function deleteFinance(id) {
   return request({
-    url: BASE_URL + '/del_mat?id='+id,
+    url: BASE_URL + '/del_fin?id='+id,
     method: 'delete',
   })
 }

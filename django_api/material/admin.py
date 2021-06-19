@@ -11,8 +11,9 @@ admin.site.register(Category, CategoryAdmin)
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['name', 'price', 'quantity', 'category','status','dt_info', 'created']
+    list_display = ['name', 'price', 'quantity', 'category','status', 'created']
     list_filter = ['price','created', 'category','status']
-    list_editable = ['price', 'quantity','dt_info','category']
-    
+    list_editable = ['price', 'quantity','category']
+    readonly_fields = ('ttl_price',)
+
 admin.site.register(Product, ProductAdmin)

@@ -5,7 +5,7 @@ Vue.use(Router)
 
 /* Layout */
 import Layout from '@/layout'
-import tableRouter from './modules/table'
+import materialTableRouter from './modules/material'
 
 
 /**
@@ -118,48 +118,50 @@ export const constantRoutes = [
   {
     path: '/material',
     component: Layout,
+    redirect: '/material/material-items',
+    name: 'Material',
+    meta: { title: 'Material' },
     children: [
       {
-        path: '/material',
+        path: 'material-items',
         component: () => import('@/views/material/index'),
-        name: 'Material',
-        meta: { title: 'Materials', icon: 'material', affix: true }
-      }
+        name: 'MaterialItems',
+        meta: { title: 'Items' }
+      },
+      {
+        path: 'material-cat',
+        component: () => import('@/views/material/categories'),
+        name: 'MaterialCats',
+        meta: { title: 'Categories' }
+      },
     ]
   },
-  // {
-  //   path: '/table',
-  //   component: Layout,
-  //   redirect: '/table/pitch-table',
-  //   name: 'Table',
-  //   meta: {
-  //     title: 'Table',
-  //     icon: 'table'
-  //   }, children: [
-  //     {
-  //       path: 'pitch-table',
-  //       component: () => import('@/views/table/pitchTable'),
-  //       name: 'PitchTable',
-  //       meta: { title: 'Pitch' }
-  //     },
-  //     {
-  //       path: 'ane-table',
-  //       component: () => import('@/views/table/aneTable'),
-  //       name: 'AneTable',
-  //       meta: { title: 'Ane Rouge' }
-  //     },
-  //     {
-  //       path: 'vol-table',
-  //       component: () => import('@/views/table/volTable'),
-  //       name: 'VolantTable',
-  //       meta: { title: 'Volant Volant' }
-  //     }
-  //   ]
-  // }
+  {
+    path: '/finance',
+    component: Layout,
+    redirect: '/finance/finance-items',
+    name: 'Finance',
+    meta: { title: 'Finance' },
+    children: [
+        {
+          path: 'finance-items',
+          component: () => import('@/views/finance/index'),
+          name: 'FinanceItems',
+          meta: { title: 'Items' }
+        },
+        {
+          path: 'finance-cat',
+          component: () => import('@/views/finance/categories'),
+          name: 'FinanceCats',
+          meta: { title: 'Categories' }
+        },
+      ]
+  },
+
 ]
 
 export const asyncRoutes = [
-  tableRouter,
+  materialTableRouter,
 ]
 
 

@@ -29,11 +29,11 @@
       </el-button>
     </div>
 
-    <div class="material-table">
+    <div class="finance-table">
        <el-table
         ref="multipleTable"
         v-loading="listLoading"
-        :data="material_items"
+        :data="finance_items"
         border
         fit
         highlight-current-row
@@ -41,29 +41,24 @@
         @sort-change="sortChange"
       >
         <el-table-column prop="id" label="ID" width="50px" align="center" show-overflow-tooltip></el-table-column>
-        <el-table-column label="Product" width="200px" align="center" show-overflow-tooltip>
+        <el-table-column label="Item" width="200px" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
             <div> {{ scope.row.name }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="Price" align="center" show-overflow-tooltip>
+        <el-table-column label="Buyer" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
-            <div> {{ scope.row.price }} €</div>
+            <div> {{ scope.row.buyer }}</div>
           </template>
         </el-table-column>
-        <el-table-column label="Quantity" width="250px" align="center" show-overflow-tooltip>
+        <el-table-column label="Price" width="250px" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
-            <el-input-number class='number-count' v-model="scope.row.quantity" @change="handleChangeQuantity(scope.row.id, scope.row.quantity)" :min="1" :step="1" ></el-input-number>
+            <el-input-number class='number-count' v-model="scope.row.price" @change="handleChangePrice(scope.row.id, scope.row.price)" :min="1" :step="1" ></el-input-number>
           </template>
         </el-table-column>
-        <!-- <el-table-column label="Total" align="center" show-overflow-tooltip>
+        <el-table-column label="Facture" width="100px" align="center" show-overflow-tooltip>
           <template slot-scope="scope">
-            <div> {{ scope.row.ttl_price }} €</div>
-          </template>
-        </el-table-column> -->
-        <el-table-column label="Status" width="100px" align="center" show-overflow-tooltip>
-          <template slot-scope="scope">
-            <div> {{ scope.row.status }}</div>
+            <div> {{ scope.row.facture }}</div>
           </template>
         </el-table-column>
         <el-table-column prop="description" label="Description" align="center" show-overflow-tooltip></el-table-column>
@@ -82,7 +77,7 @@
 
     <el-dialog :visible.sync="catDialogVisible">
       <el-form :model="catTemp" label-position="left" label-width="150px" style="width: 400px; margin-left:50px;">
-        <el-form-item label="Category Name" prop="name" required>
+        <el-form-item label="Category Name" required>
           <el-input v-model="catTemp.name"/>
         </el-form-item>
       </el-form>
@@ -113,14 +108,14 @@
           </el-select>
 
         </el-form-item>
-        <el-form-item label="Status" required>
-          <el-input  v-model="temp.status" />
+        <el-form-item label="Buyer" required>
+          <el-input  v-model="temp.buyer" />
         </el-form-item>
         <el-form-item label="Price" prop="price"  required>
           <el-input  type="number" v-model="temp.price" />
         </el-form-item>
-        <el-form-item label="Quantity" required>
-          <el-input  type="number" v-model="temp.quantity" />
+        <el-form-item label="facture" required>
+          <el-input  v-model="temp.facture" />
         </el-form-item>
         <el-form-item label="Description">
           <el-input v-model="temp.description" />
@@ -142,13 +137,13 @@
 
 <script>
 import { mapGetters } from 'vuex'
-import { getAllCats, getMaterial, getAllMaterials, getAllMaterialsByCat, 
-addCat, addMaterial, updateMaterial, updateMaterialQuantity, deleteMaterial} from '@/api/material.js'
+import { getAllCats, getAllFinances, getAllFinancesByCat, 
+addCat, addFinance, updateFinance, updateFinancePrice, deleteFinance} from '@/api/finance.js'
 import Pagination from '@/components/Pagination' // secondary package based on el-pagination
 import waves from '@/directive/waves' // waves directive
 
 export default {
-  name: 'MaterialTable',
+  name: 'FinanceTable',
   components: { Pagination },
   directives: { waves },
   data() {
@@ -161,8 +156,8 @@ export default {
         name: '',
       },
 
-      material: null,
-      material_items: null,
+      finance: null,
+      finance_items: null,
       tmp_list: null,
       listLoading: false,
       showReviewer: false,
@@ -172,8 +167,8 @@ export default {
       },
 
       temp: {
-        id: 0, name: '', quantity: 0, price: 0,
-        description: '', image: '', status: '', category_id: '',
+        id: 0, name: '', facture:'', price: 0,
+        description: '', buyer: '', category_id: '',
       },
 
       // Edit dialog configuration
@@ -195,10 +190,10 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'materials',
-      'materialByCat',
+      'finances',
+      'financeByCat',
       'categories',
-      'mats_loading'
+      'fins_loading'
     ]),
   },
   created() {
@@ -210,24 +205,24 @@ export default {
       var res = await getAllCats()
       console.log(res.data.cat_infos)
       this.cats = res.data.cat_infos
-      this.$store.dispatch('material/setCategories', this.cats)
+      this.$store.dispatch('finance/setCategories', this.cats)
       //TODO:use aysnc/await to replace the settimeout
-      getAllMaterials().then(response => {
-        this.material_items = response.data.info
-        console.log(this.material_items)
-        this.$store.dispatch('material/setMaterials', this.material_items)
+      getAllFinances().then(response => {
+        this.finance_items = response.data.info
+        console.log(this.finance_items)
+        this.$store.dispatch('finance/setFinances', this.finance_items)
         this.listLoading = false
       }).catch(err => {
         console.error(err)
       })
     },
 
-    getMatByCat(row) {
+    getFinByCat(row) {
       //TODO: Pagination
       this.cat_id = row.id
-      getAllMaterialsByCat(this.cat_id).then(response => {
-        const matsByCat = response.data.info
-        this.$store.dispatch('material/setMaterialsByCat', matsByCat)
+      getAllFinancesByCat(this.cat_id).then(response => {
+        const finsByCat = response.data.info
+        this.$store.dispatch('finance/setFinancesByCat', finsByCat)
       }).catch(err => {
         console.error(err)
       })
@@ -243,9 +238,9 @@ export default {
     },
     sortChange(data) {
       const { prop, order } = data
-      this.tmp_list = this.material_items
-      this.material_items.sort(this.compare("a_score"));
-      console.log(this.material_items)
+      this.tmp_list = this.finance_items
+      this.finance_items.sort(this.compare("a_score"));
+      console.log(this.finance_items)
     },
 
     handleSelect(key, keyPath) {
@@ -255,15 +250,15 @@ export default {
     //TODO: Pagination 
     handleFilter() {
       var new_array = []
-      this.material_items = this.tmp_list
+      this.finance_items = this.tmp_list
       console.log(this.listQuery, this.list)
       if (this.listQuery.name != "" ) {
-        for (var i = 0; i < this.material_items.length; i++) {
-          if (this.material_items[i].name == this.listQuery.name) {
-            new_array.push(this.material_items[i])
+        for (var i = 0; i < this.finance_items.length; i++) {
+          if (this.finance_items[i].name == this.listQuery.name) {
+            new_array.push(this.finance_items[i])
           }
         }
-        this.material_items = new_array
+        this.finance_items = new_array
         console.log('FILTER ACCORDING TO THE NAME.....')
       } else  {
         this.getList()
@@ -305,8 +300,8 @@ export default {
     },
     resetTemp() {
       this.temp = {
-        id: undefined, name: 'None', quantity: 0, price: 0,
-        description: '', image: '', status: '', category_id: 1,
+        id: undefined, name: 'None', buyer: '', price: 0,
+        description: '', facture: '', category_id: 0,
       }
     },
     handleCreate() {
@@ -321,7 +316,7 @@ export default {
     createData() {
       this.$refs['dataForm'].validate((valid) => {
         if (valid) {
-          addMaterial(this.temp).then(response => {
+          addFinance(this.temp).then(response => {
             this.$message({
               message: 'ADD ' + response.data.name + "'s Category Successfully!",
               type: 'success'
@@ -343,9 +338,9 @@ export default {
       })
     },
     // ------------------------------- UPDATE ----------------------------------
-    handleChangeQuantity(id, quantity) {
-      const payload = {'id': id,'quantity': quantity}
-      updateMaterialQuantity(payload).then(res => {
+    handleChangePrice(id, price) {
+      const payload = {'id': id,'price': price}
+      updateFinancePrice(payload).then(res => {
         console.log(res)
       }).catch(err => {
         console.error(err)
@@ -380,7 +375,7 @@ export default {
         if (valid) {
           const tempData = Object.assign({}, this.temp)
           console.log('tempData:', tempData)
-          updateMaterial(tempData).then(response => {
+          updateFinance(tempData).then(response => {
             this.$message({
               message: 'UPDATE Successfully!',
               type: 'success'
@@ -405,7 +400,7 @@ export default {
 
     // --------------------------------- DELETE -------------------------------
     confirmDelete(index) {
-      this.$confirm('This operation will delete this information forever, are you sure?', 'Note', {
+      this.$confirm('This operation will delete this inforfinion forever, are you sure?', 'Note', {
           confirmButtonText: 'Confirm',
           cancelButtonText: 'Cancle',
           type: 'warning'
@@ -420,7 +415,7 @@ export default {
     },
     handleDelete(index) {
       console.log('INDEX:', index)
-      deleteMaterial(index).then(() => {
+      deleteFinance(index).then(() => {
         this.$notify({
           title: 'Success',
           message: 'Delete Successfully',
@@ -445,7 +440,7 @@ export default {
       import('@/vendor/Export2Excel').then(excel => {
         const tHeader = ['ID', 'name', 'Price', 'Quantity', 'Description', 'status']
         const filterVal = ['id', 'name','price', 'quantity', 'description', 'status']
-        const data = this.formatJson(filterVal)
+        const data = this.forfinJson(filterVal)
         excel.export_json_to_excel({
           header: tHeader,
           data,
@@ -475,7 +470,7 @@ export default {
 .add-cat-btn {
   transform: scale(1.2);
 }
-.material-table {
+.finance-table {
   padding: 0.5vw 0.5vw;
   margin-bottom: 1vw;
   border-radius: 2%;

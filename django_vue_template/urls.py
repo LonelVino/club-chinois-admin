@@ -27,6 +27,7 @@ urlpatterns = [
     path('django_api/cas/', include('django_api.cas.urls')),
     path('django_api/user/', include('django_api.user.urls')),
     path('django_api/material/', include('django_api.material.urls')),
+    path('django_api/finance/', include('django_api.finance.urls')),
 
     # ---------------------- World Week-------------------------
     path('django_api/ane/', include('django_api.world_week.ane.urls')),

@@ -18,6 +18,11 @@ const getters = {
   materialByCat: state => state.material.materialByCat,
   categories: state => state.material.categories,
   mats_loading: state => state.material.mats_loading,
+
+  finances: state => state.finance.finances,
+  financeByCat: state => state.finance.financeByCat,
+  categories: state => state.finance.categories,
+  finss_loading: state => state.finance.fins_loading,
   
   permission_routes: state => state.permission.routes,
   errorLogs: state => state.errorLog.logs

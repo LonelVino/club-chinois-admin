@@ -11,6 +11,15 @@ urlpatterns = [
     url('mats_by_cat', views.getMaterialsByCat, name='allMaterialsByCat'), 
     # url(r'^$',views.viarezo_check,name='viarezo_check'),
     # url('secret', views.secret_page, name='secret'),
+    url('add_cat', views.add_cat, name='AddCat'), 
+    url('add_mat', views.add_material, name='addMaterial'), 
+
+    url('update_cat', views.update_cat, name='updateCategory'),     
+    url('update_mat', views.update_material, name='updateMaterial'), 
+    url('update_quantity', views.update_material_quantity, name='updateMaterial'), 
+
+    url('del_cat', views.del_cat, name='delCategory'),     
+    url('del_mat', views.del_material, name='delMaterial'), 
     ]
 
 
